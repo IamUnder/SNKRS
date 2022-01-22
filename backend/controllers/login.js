@@ -1,14 +1,23 @@
 
 
-function test (req, res) {
+function login (req, res) {
     
     res.status(200).send({
-        menssage: "servidor correcto"
+        menssage: "login correcto"
+    })
+
+}
+
+function register (req, res) {
+
+    res.status(200).send({
+        menssage: "registro"
     })
 
 }
 
 // Exportación de modulos
 module.exports = {
-    test
+    login,
+    register
 }

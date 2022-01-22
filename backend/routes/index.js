@@ -5,7 +5,8 @@ const router = require('express').Router()
 var controller = require('../controllers/login')
 
 // Declaracion de rutas
-router.get('/', controller.test)
+router.get('/login', controller.login)
+router.get('/register', controller.register)
 
 // Exportación de la configuracion
 module.exports = router
