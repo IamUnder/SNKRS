@@ -1,28 +1,40 @@
-// Declaración de variables
+// Declaracion de paquetes.
 const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const jwt = require('jsonwebtoken');
-const { config } = require('dotenv')
+const mongoose = require('mongoose')
+const bodyparser = require('body-parser')
+require('dotenv').config()
 
-// Declaración de rutas
-const indexRouter = require('./routes/index')
-
+// Inicializacion de express
 const app = express()
-app.use(bodyParser.json())
-//app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cors())
 
-// 
-app.set('key', config().parsed.KEY);
-app.set('config', config().parsed)
-app.locals.env = app.get('key')
-app.locals.config = app.get('config')
+// Capturar body
+app.use(bodyparser.urlencoded({ extended: false }))
+app.use(bodyparser.json())
 
-// Inicializacion del servidor
-app.listen(3000,()=>{
-    console.log('Servidor iniciado en el puerto 3000') 
-});
+// Conexion DB
+//const url = `mongodb://${process.env.USERDB}:${process.env.PASSWORDDB}@${process.env.URL}/${process.env.DBNAME}?retryWrites=true&w=majority`
+const url = `mongodb://${process.env.URL}/${process.env.DBNAME}?retryWrites=true&w=majority`
+mongoose.connect(url,
+    { useNewUrlParser: true, useUnifiedTopology: true }
+)
+.then( () => console.log('Base de datos contectada') )
+.catch( e => console.log('Error en la conexion: ', e) )
 
-// Ruta de testing
-app.use('/', indexRouter );
+// Importacion de rutas
+const authRoutes = require('./routes/auth')
+
+// Middlewares
+app.get('/', (req, res) => {
+    res.json({
+        error: false,
+        mensaje: 'Works!'
+    })
+})
+
+app.use('/api/user/', authRoutes)
+
+// Iniciar server
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+    console.log(`Servidor iniciado en el puerto ${PORT}`)
+})
