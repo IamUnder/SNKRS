@@ -3,6 +3,7 @@ const router = require('express').Router()
 const User = require('../models/Users')
 const Joi = require('@hapi/joi')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 // Validacion 
 const schemaRegister = Joi.object({
@@ -22,14 +23,29 @@ const schemaRegister = Joi.object({
     password: Joi.string().min(6).max(1024).required().messages({
         'string.min' : 'El tamaño minimo para la contraseña es 6',
         'string.max' : 'El tamaño maximo para la contraseña es 1024',
-        'string.empty' : 'La contaseña es necesario',
-        'any.required' : 'La contaseña es necesario' 
+        'string.empty' : 'La contaseña es necesaria',
+        'any.required' : 'La contaseña es necesaria' 
     }),
     user: Joi.string().min(6).max(255).required().messages({
         'string.min' : 'El tamaño minimo para el user es 6',
         'string.max' : 'El tamaño maximo para el user es 255',
         'string.empty' : 'El user es necesario',
         'any.required' : 'El user es necesario' 
+    })
+})
+
+const schemaLogin = Joi.object({
+    user: Joi.string().min(1).max(255).required().messages({
+        'string.min' : 'El tamaño minimo para el user o email es 1',
+        'string.max' : 'El tamaño maximo para el user o email es 255',
+        'string.empty' : 'El user o email es necesario',
+        'any.required' : 'El user o email es necesario' 
+    }),
+    password: Joi.string().min(6).max(1024).required().messages({
+        'string.min' : 'El tamaño minimo para la contraseña es 6',
+        'string.max' : 'El tamaño maximo para la contraseña es 1024',
+        'string.empty' : 'La contaseña es necesaria',
+        'any.required' : 'La contaseña es necesaria' 
     })
 })
 
@@ -70,7 +86,7 @@ router.post('/register', async (req, res) => {
 
     try {
         const savedUser = await user.save()
-        res.json({
+        res.status(201).json({
             error: null,
             mensaje: 'Usuario creado correctamente'
         })
@@ -80,6 +96,53 @@ router.post('/register', async (req, res) => {
         })
     }
 
+})
+
+// Ruta de Login
+router.post('/login', async (req, res) => {
+
+    // Validacion de campos
+    const { error } = schemaLogin.validate(req.body)
+    if (error) {
+        res.status(400).json({
+            error: error.details[0].message 
+        })
+    }
+
+    // Comprobamos email y user al permitir el acceso con ambas
+    var user = await User.findOne({ email: req.body.user })
+    if (!user) {
+        user = await User.findOne({ user: req.body.user })
+        if (!user) {
+            return res.status(400).json({
+                error: 'Usuario no creado.'
+            })
+        }
+    }
+
+    // Validacion de contraseña
+    const validPassword = await bcrypt.compare(req.body.password, user.password)
+    if (!validPassword) {
+        return res.status(401).json({
+            error: 'Credenciales incorrectos.'
+        })
+    }
+
+    // Creacion jwt token
+    const token = jwt.sign({
+        name: user.email,
+        id: user._id
+    }, process.env.TOKEN)
+
+    res.header('auth-token', token).json({
+        error: null,
+        user: user.user,
+        name: user.name,
+        img: user.img,
+        email: user.email,
+        id: user._id,
+        token: token
+    })
 })
 
 module.exports = router;
