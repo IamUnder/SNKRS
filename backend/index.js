@@ -22,6 +22,9 @@ mongoose.connect(url,
 
 // Importacion de rutas
 const authRoutes = require('./routes/auth')
+const validateToken = require('./routes/validate-token')
+
+const optionsRoutes = require('./routes/optionsUser')
 
 // Middlewares
 app.get('/', (req, res) => {
@@ -31,7 +34,8 @@ app.get('/', (req, res) => {
     })
 })
 
-app.use('/api/user/', authRoutes)
+app.use('/api/', authRoutes)
+app.use('/api/u/', validateToken, optionsRoutes)
 
 // Iniciar server
 const PORT = process.env.PORT || 3000
