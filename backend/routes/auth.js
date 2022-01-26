@@ -54,11 +54,15 @@ router.post('/register', async (req, res) => {
         })
     }
 
+    // Hash contraseña
+    const salt = await bcrypt.genSalt(10)
+    const password = await bcrypt.hash(req.body.password, salt)
+
     // Creacion del usuario
     const user = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password,
+        password: password,
         user: req.body.user,
         img: req.body.img || '',
 
