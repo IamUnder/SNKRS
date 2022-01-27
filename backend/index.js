@@ -2,10 +2,14 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyparser = require('body-parser')
+const cors = require('cors')
 require('dotenv').config()
 
 // Inicializacion de express
 const app = express()
+
+// Evitar problema de cors
+app.use(cors())
 
 // Capturar body
 app.use(bodyparser.urlencoded({ extended: false }))

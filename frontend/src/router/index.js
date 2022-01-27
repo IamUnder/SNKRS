@@ -1,14 +1,22 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Login from '../views/Login.vue'
+import Inicio from '../views/Inicio.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Login',
+    component: Login,
+    meta: { title: 'SNRKS: Login' }
+  },
+  {
+    path: '/Inicio',
+    name: 'SNKRS: Inicio',
+    component: Inicio,
+    meta: { title: 'SNRKS: Inicio' }
   },
   {
     path: '/about',
