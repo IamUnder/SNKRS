@@ -136,12 +136,14 @@ router.post('/login', async (req, res) => {
 
     res.header('auth-token', token).json({
         error: null,
-        user: user.user,
-        name: user.name,
-        img: user.img,
-        email: user.email,
-        id: user._id,
-        token: token
+        user: {
+            user: user.user,
+            name: user.name,
+            img: user.img,
+            email: user.email,
+            id: user._id,
+            token: token
+        }
     })
 })
 

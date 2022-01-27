@@ -81,9 +81,11 @@
     methods: {
       login () {
         auth.login(this.user, this.password).then(response => {
-          console.log(response);
+          console.log(response.data.user);
 
-          this.$router.push("/Inicio")
+          auth.setUser(response.data.user)
+
+          //this.$router.push("/Inicio")
         }).catch((error) => {
           this.valid = !this.valid
           this.error = error.response.data.error
