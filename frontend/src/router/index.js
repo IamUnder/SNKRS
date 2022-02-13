@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Inicio from '../views/Inicio.vue'
+import Register from '../views/Register.vue'
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,12 @@ const routes = [
     name: 'SNKRS: Inicio',
     component: Inicio,
     meta: { title: 'SNRKS: Inicio' }
+  },
+  {
+    path: '/Register',
+    name: 'SNRKS: Register',
+    component: Register,
+    meta: { title: 'SNRKS: Registro'}
   },
   {
     path: '/about',

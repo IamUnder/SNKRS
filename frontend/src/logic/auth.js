@@ -11,8 +11,9 @@ function login (user, password) {
 }
 
 // Funcion de registro
-function register () {
-    return true
+function register (name, email, password, user) {
+    const userRegister = {name, email, password, user}
+    return axios.post(ENDPOINT_PATH+'register', userRegister)
 }
 
 // Funcion setteo user en cookies

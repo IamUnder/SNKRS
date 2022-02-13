@@ -70,6 +70,17 @@ router.post('/register', async (req, res) => {
         })
     }
 
+    // Validacion user unico
+    var userString = req.body.user
+    userString = userString.trim()
+    const isUserExist = await User.findOne({ user: userString })
+    if (isUserExist) {
+        return res.status(400).json({
+            error: 'El usuario ya esta en uso.',
+            mensaje: 'El usuario ya esta en uso.'
+        })
+    }
+
     // Hash contraseña
     const salt = await bcrypt.genSalt(10)
     const password = await bcrypt.hash(req.body.password, salt)
@@ -79,7 +90,7 @@ router.post('/register', async (req, res) => {
         name: req.body.name,
         email: req.body.email,
         password: password,
-        user: req.body.user,
+        user: userString,
         img: req.body.img || '',
 
     })

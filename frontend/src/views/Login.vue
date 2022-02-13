@@ -39,7 +39,7 @@
                 </div>
               </div>
 
-              <p v-if="valid" class="error">{{ error }}</p>
+              <p v-if="!valid" class="error">{{ error }}</p>
 
               <!-- Boton --> 
               <div class="col-8 offset-2 mt-5">
@@ -47,7 +47,7 @@
               </div>
 
               <div class="col-8 offset-2 mt-5 text-b">
-                <h5>Aun no tienes cuenta? <a href="">Registrate aqui!</a></h5>
+                <h5>Aun no tienes cuenta? <a href="/Register">Registrate aqui!</a></h5>
                 <h5>¿Olvidaste tu contraseña?</h5>
               </div> 
             </form>
@@ -76,7 +76,7 @@
       user: "",
       password: "",
       error: "",
-      valid: false
+      valid: true
     }),
     methods: {
       login () {
@@ -85,9 +85,9 @@
 
           auth.setUser(response.data.user)
 
-          //this.$router.push("/Inicio")
+          this.$router.push("/Inicio")
         }).catch((error) => {
-          this.valid = !this.valid
+          this.valid = false
           this.error = error.response.data.error
           console.log(error.response)
         })
