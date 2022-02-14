@@ -26,8 +26,8 @@ function getUser () {
     return cookies.get("userLogged")
 }
 
-function deleteUser () {
+function logOut () {
     cookies.remove("userLogged")
 }
 
-export default { login, register, setUser, getUser, deleteUser };
+export default { login, register, setUser, getUser, logOut };
