@@ -2,7 +2,7 @@
 import axios from "axios"
 import cookies from "js-cookie"
 
-const ENDPOINT_PATH = "http://localhost:3000"+"/api/";
+const ENDPOINT_PATH = "http://localhost:3000"+"/api/"; // .env
 
 // Funcion de login
 function login (user, password) {
@@ -18,12 +18,13 @@ function register (name, email, password, user) {
 
 // Funcion setteo user en cookies
 function setUser (user) {
-    cookies.set("userLogged", user)
+    cookies.set("userLogged", JSON.stringify(user))
 }
 
 // Funcion get user en cookies
 function getUser () {
-    return cookies.get("userLogged")
+    var user = cookies.get("userLogged")
+    return JSON.parse(user)
 }
 
 function logOut () {

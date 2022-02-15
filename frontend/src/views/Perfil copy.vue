@@ -20,8 +20,8 @@
 								</a>
 								<div class="dropdown-menu dropdown-menu-end">
 									<!-- Editar perfil WIP -->
-									<a href="javascript:void(0);" class="dropdown-item" v-if="!estado" v-on:click="edit()">Editar</a>
-                                    <a href="javascript:void(0);" class="dropdown-item" v-if="estado" v-on:click="edit(true)">Confirmar cambios</a>
+									<a href="javascript:void(0);" class="dropdown-item" v-on:click="edit()">Editar</a>
+                                    <a href="javascript:void(0);" class="dropdown-item" v-on:click="edit()">Confirmar cambios</a>
 								</div>
 							</div>
 							<div class="d-flex align-items-start">
@@ -32,15 +32,8 @@
 									alt="profile-image"
 									/>
 								<div class="w-100 ms-3">
-                                    <!-- Nombre -->
-                                    <div>
-                                        <h4 class="my-0" v-if="!estado">{{user.name}}</h4>
-                                        <input type="text" class="form-control col-4" v-bind="name" placeholder="Nuevo nombre" v-if="estado">
-                                    </div>
-                                    <div>
-                                        <p class="text-muted" v-if="!estado">@{{user.user}}</p>
-                                        <input type="text" class="form-control col-4" v-bind="user" placeholder="Nuevo usuario" v-if="estado">
-                                    </div>
+									<h4 class="my-0">{{user.name}}</h4>
+									<p class="text-muted">@{{user.user}}</p>
 									<!-- <button
 										type="button"
 										class="btn btn-custom btn-xs waves-effect mb-2 waves-light"
@@ -51,20 +44,10 @@
 								</div>
 							</div>
 							<div class="mt-3">
-                                <div v-if="!estado">
-                                    <h4 class="font-13 text-uppercase">Descripcion :</h4>
-                                    <p class="text-muted font-13 mb-3">
-                                        {{user.descripcion || 'Sin descripción'}}
-                                    </p>
-                                </div>
-                                <div v-if="estado">
-                                    <textarea
-									rows="3"
-									class="form-control"
-									placeholder=""
-                                    v-model="descripcion"
-									></textarea>
-                                </div>
+								<h4 class="font-13 text-uppercase">Descripcion :</h4>
+								<p class="text-muted font-13 mb-3">
+									{{user.descripcion || 'Sin descripción'}}
+								</p>
 								<p class="text-muted mb-2 font-13">
 									<strong>Email :</strong>
 									<span class="ms-2">{{user.email}}</span>
@@ -245,7 +228,6 @@
     // Importacion de componentes
     import navbar from "@/components/navbar.vue";
     import auth from '@/logic/auth.js'
-    import profile from '@/logic/options.js'
 
     export default {
         components: {
@@ -254,47 +236,25 @@
         data: () => ({
             user: {},
             estado: false,
-            descripcion: "",
-            userName: "",
-            name: "",
             // WIP
             coleccion: [],
             ventas: [],
             vendido: 0
         }),
         methods: {
-            edit (confirm) {
+            edit () {
+
+                if (this.estado) {
+                    console.log('Habria que guardar cambios');
+                }
 
                 this.estado = !this.estado
                 console.log(this.estado);
-                
-                if (confirm) {
-
-                    var options = {
-                        descripcion: this.descripcion,
-                        user: this.userName,
-                        name: this.name
-                    }
-
-                    profile.updateProfile(options, this.user.token).then(()=>{
-                        this.user = auth.getUser()
-
-                        this.descripcion = this.user.descripcion || ""
-                        this.userName = this.user.user
-                        this.name = this.user.name
-                        console.log(this.user);
-                    }).catch((error) => {
-                        console.log(error.response)
-                    })
-                }
             }
         },
         mounted() {
             this.user = auth.getUser()
-
-            this.descripcion = this.user.descripcion || ""
-            this.userName = this.user.user
-            this.name = this.user.name
+            console.log(this.user);
         },
     };
 </script>

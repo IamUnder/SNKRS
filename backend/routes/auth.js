@@ -1,6 +1,6 @@
 // Importacion de modulos
 const router = require('express').Router()
-const User = require('../models/Users')
+    const User = require('../models/Users')
 const Joi = require('@hapi/joi')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -145,13 +145,16 @@ router.post('/login', async (req, res) => {
         id: user._id
     }, process.env.TOKEN)
 
-    res.header('auth-token', token).json({
+    console.log(user);
+
+    return res.header('auth-token', token).json({
         error: null,
         user: {
             user: user.user,
             name: user.name,
             img: user.img,
             email: user.email,
+            descripcion: user.descripcion,
             id: user._id,
             token: token
         }
