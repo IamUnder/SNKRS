@@ -33,7 +33,7 @@ router.post('/create', authRoutes, async (req, res) => {
 // Ruta de obtencion de todos los post (Provisional)
 router.get('/get', authRoutes, async (req, res) => {
 
-    const posts = await Post.find()
+    const posts = await Post.find().sort({_id: -1})
 
     return res.json({
         posts: posts
