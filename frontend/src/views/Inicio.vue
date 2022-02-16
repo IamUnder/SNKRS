@@ -45,13 +45,13 @@
                                 alt="imagen de perfil"
                                 />
                             <div class="w-100">
-                                <h5 class="">
+                                <h5 class="" @click="goTo(post.user)">
                                     {{ post.nameUser }}
                                     <small>@{{post.user}}</small>
                                     <small class="text-muted"> {{timeAgo(post.date)}}</small>
                                 </h5>
                                 <div class="">
-                                   {{ post.body }}
+                                    {{ post.body }}
                                     <br />
                                     <a
                                         href="javascript: void(0);"
@@ -130,6 +130,14 @@ export default {
                 return "Hace " + Math.floor(interval) + " minutos";
             }
             return "Hace " + Math.floor(seconds) + " seconds";
+        },
+        goTo (user) {
+            this.$router.push({
+                name: 'SNRKS: Perfil',
+                params: {
+                    user: user
+                }
+            })
         }
     },
 }
