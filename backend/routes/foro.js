@@ -36,8 +36,21 @@ router.get('/get', authRoutes, async (req, res) => {
     const posts = await Post.find().sort({_id: -1})
 
     return res.json({
+        error: null,
         posts: posts
     })
 })
+
+// Ruta de obtenicion de los post de un solo usuario
+router.get('/get/:id', async (req, res) => {
+
+    const posts = await Post.find({idUser: req.params.id}).sort({_id: -1})
+
+    return res.json({
+        error: null,
+        posts: posts
+    })
+
+}) 
 
 module.exports = router
