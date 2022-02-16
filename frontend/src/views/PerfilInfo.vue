@@ -9,21 +9,6 @@
 				<div class="col-xl-5">
 					<div class="card">
 						<div class="card-body">
-							<div class="dropdown float-end">
-								<a  
-									href="#"
-									class="dropdown-toggle arrow-none card-drop"
-									data-bs-toggle="dropdown"
-									aria-expanded="false"
-									>
-								<i class="mdi mdi-dots-vertical"></i>
-								</a>
-								<div class="dropdown-menu dropdown-menu-end">
-									<!-- Editar perfil WIP -->
-									<a href="javascript:void(0);" class="dropdown-item" v-on:click="edit()">Editar</a>
-                                    <a href="javascript:void(0);" class="dropdown-item" v-on:click="edit()">Confirmar cambios</a>
-								</div>
-							</div>
 							<div class="d-flex align-items-start">
                                 <!-- Imagen de perfil, si no tiene muestra esa WIP -->
 								<img 
@@ -76,8 +61,8 @@
 					</div>
 					<div class="card">
 						<div class="card-body">
-							<h4 class="header-title mb-3">
-								Coleccion <font-awesome-icon icon="fa-solid fa-rectangle-list" />
+							<h4 class="header-title mb-3 text-center">
+								Coleccion <font-awesome-icon icon="fa-solid fa-circle-plus" />
 							</h4>
 							<div class="list-group">
 								<a href="javascript:void(0)" class="list-group-item list-group-item-action">
@@ -99,32 +84,8 @@
 				<div class="col-xl-7">
 					<div class="card">
 						<div class="card-body">
-							<!-- comment box -->
-							<form action="#" class="comment-area-box mb-3">
-								<span class="input-icon">
-								<textarea
-									rows="3"
-									class="form-control"
-									placeholder="Write something..."
-									></textarea>
-								</span>
-								<div class="comment-area-btn">
-									<div class="float-end">
-										<button
-											type="submit"
-											class="btn btn-sm btn-custom waves-effect waves-light"
-											>
-										Post
-										</button>
-									</div>
-									<div>
-										<a href="javascript:void(0)" class="btn btn-sm btn-light text-black-50"><i class="far fa-user"></i></a>
-									</div>
-								</div>
-							</form>
-							<!-- end comment box -->
 							<!-- Story Box-->
-							<div class="border border-light p-2 mb-3">
+							<div class="border p-2 mb-3" v-for="post in posts" :key="post.id">
                                 <!-- Post -->
 								<div class="d-flex align-items-start">
 									<img
@@ -134,15 +95,11 @@
 										/>
 									<div class="w-100">
 										<h5 class="">
-											Thelma Fridley
-											<small class="text-muted"> 1 hour ago</small>
+											{{ user.name }}
+											<small class="text-muted"> {{ timeAgo(post.date) }} </small>
 										</h5>
 										<div class="">
-											Cras sit amet nibh libero, in gravida nulla. Nulla vel
-											metus scelerisque ante sollicitudin. Cras purus odio,
-											vestibulum in vulputate at, tempus viverra turpis. Duis
-											sagittis ipsum. Praesent mauris. Fusce nec tellus sed
-											augue semper porta. Mauris massa.
+											{{ post.body }}
 											<br />
 											<a
 												href="javascript: void(0);"
@@ -153,8 +110,8 @@
 									</div>
 								</div>
                                 <!-- Respuesta -->
-								<div class="post-user-comment-box">
-									<div class="d-flex align-items-start">
+								<!-- <div class="post-user-comment-box"> -->
+									<!-- <div class="d-flex align-items-start">
 										<img
 											class="me-2 avatar-sm rounded-circle"
 											src="https://bootdey.com/img/Content/avatar/avatar3.png"
@@ -190,9 +147,9 @@
 												</div>
 											</div>
 										</div>
-									</div>
+									</div> -->
                                     <!-- Respuesta de respuesta, sin cuenta no deberia de salir --> 
-									<div class="d-flex align-items-start mt-2">
+									<!-- <div class="d-flex align-items-start mt-2">
 										<a class="pe-2" href="#">
 										<img
 											src="https://bootdey.com/img/Content/avatar/avatar1.png"
@@ -209,8 +166,8 @@
 												placeholder="Add comment"
 												/>
 										</div>
-									</div>
-								</div>
+									</div> -->
+								<!-- </div> -->
 							</div>
 						</div>
 					</div>
@@ -228,6 +185,7 @@
     // Importacion de componentes
     import navbar from "@/components/navbar.vue";
     import auth from '@/logic/auth.js'
+	import foro from '@/logic/foro.js'
 
     export default {
         components: {
@@ -236,6 +194,7 @@
         data: () => ({
             user: {},
             estado: false,
+			posts: [],
             // WIP
             coleccion: [],
             ventas: [],
@@ -250,11 +209,46 @@
 
                 this.estado = !this.estado
                 console.log(this.estado);
+            },
+            timeAgo (date) {
+
+                var postDate = new Date(date)
+                var seconds = Math.floor((new Date() - postDate) / 1000);
+
+                var interval = seconds / 31536000;
+
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " años";
+                }
+                interval = seconds / 2592000;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " meses";
+                }
+                interval = seconds / 86400;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " dias";
+                }
+                interval = seconds / 3600;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " horas";
+                }
+                interval = seconds / 60;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " minutos";
+                }
+                return "Hace " + Math.floor(seconds) + " seconds";
             }
         },
-        mounted() {
-            this.user = auth.getUser()
-            console.log(this.user);
+        mounted() { 
+			auth.getOneUser(this.$route.params.user).then(response => {
+				this.user = response.data.user
+				foro.getPost(this.user.id).then(response => {
+					this.posts = response.data.posts
+				})
+			}).catch( () => {
+				this.$router.push('/inicio')
+			})
+            console.log(this.user)
         },
     };
 </script>

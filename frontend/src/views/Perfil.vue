@@ -331,7 +331,7 @@
                 }
             },
             getPost () {
-                foro.getPost(this.user.id, this.user.token).then(response => {
+                foro.getPost(this.user.id).then(response => {
                 this.posts = response.data.posts
                 })
             }      

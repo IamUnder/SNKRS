@@ -28,15 +28,9 @@ function getAllPost (token) {
 }
 
 // Funcion para recuperar los post de un usuario
-function getPost (id, token) {
-    const headers = {
-        'Content-Type': 'application/json',
-        'auth-token': token
-    }
+function getPost (id) {
 
-    return axios.get(ENDPOINT_PATH+'f/get/'+id,{
-        headers: headers
-    })
+    return axios.get(ENDPOINT_PATH+'f/get/'+id)
 }
 
 export default {

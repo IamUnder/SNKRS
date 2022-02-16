@@ -4,6 +4,7 @@ import Login from '@/views/Login.vue'
 import Inicio from '@/views/Inicio.vue'
 import Register from '@/views/Register.vue'
 import Perfil from '@/views/Perfil.vue'
+import PerfilUser from '@/views/PerfilInfo.vue'
 import CompraVenta from '@/views/CompraVenta.vue'
 import Tracking from '@/views/Tracking.vue'
 
@@ -12,7 +13,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Login',
+    name: 'SNKRS: Login',
     component: Login,
     meta: { title: 'SNRKS: Login' }
   },
@@ -36,9 +37,15 @@ const routes = [
   },
   {
     path: '/User',
-    name: 'SNRKS: Perfil',
+    name: 'SNRKS: Perfil personal',
     component: Perfil,
     meta: { title: 'SNRKS: Perfil'}
+  },
+  {
+    path: '/User/:user',
+    name: 'SNRKS: Perfil',
+    component: PerfilUser,
+    meta: { tittle: 'SNRKS: Perfil' }
   },
   {
     path: '/Mercado',

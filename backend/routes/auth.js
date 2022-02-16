@@ -161,4 +161,28 @@ router.post('/login', async (req, res) => {
     })
 })
 
+router.post('/user', async (req, res) => {
+
+    const user = await User.findOne({ user: req.body.user })
+
+    if (!user) {
+        return res.status(400).json({
+            error: 'Usuario no encontrado.'
+        })
+    }
+
+    return res.json({
+        error: null,
+        user: {
+            user: user.user,
+            name: user.name,
+            img: user.img,
+            email: user.email,
+            descripcion: user.descripcion,
+            id: user._id
+        }
+    })
+
+})
+
 module.exports = router;
