@@ -29,6 +29,7 @@ const authRoutes = require('./routes/auth')
 const validateToken = require('./routes/validate-token')
 
 const optionsRoutes = require('./routes/optionsUser')
+const foroRoutes = require('./routes/foro')
 
 // Middlewares
 app.get('/', (req, res) => {
@@ -40,6 +41,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/', authRoutes)
 app.use('/api/u/', validateToken, optionsRoutes)
+app.use('/api/f/', foroRoutes)
 
 // Iniciar server
 const PORT = process.env.PORT || 3000

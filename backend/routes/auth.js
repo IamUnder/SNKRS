@@ -1,6 +1,6 @@
 // Importacion de modulos
 const router = require('express').Router()
-    const User = require('../models/Users')
+const User = require('../models/users')
 const Joi = require('@hapi/joi')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -97,12 +97,12 @@ router.post('/register', async (req, res) => {
 
     try {
         const savedUser = await user.save()
-        res.status(201).json({
+        return res.status(201).json({
             error: null,
             mensaje: 'Usuario creado correctamente'
         })
     } catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             error: error
         })
     }

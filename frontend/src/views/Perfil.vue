@@ -122,7 +122,7 @@
 								<textarea
 									rows="3"
 									class="form-control"
-									placeholder="Write something..."
+									placeholder="Que tienes que decir..."
 									></textarea>
 								</span>
 								<div class="comment-area-btn">

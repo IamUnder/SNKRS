@@ -15,11 +15,11 @@ function updateProfile (options, token) {
         'auth-token': token
     }
 
+    console.log(headers);
     return axios.post(ENDPOINT_PATH+'u/profile',options,{
         headers: headers
     }).then(response => {
         setUser(response.data.user)
-        console.log('hago esto');
     })
 }
 
