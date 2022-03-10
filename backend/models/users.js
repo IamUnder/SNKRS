@@ -36,6 +36,16 @@ const userSchema = mongoose.Schema(
         date: {
             type: Date,
             default: Date.now
+        },
+        follow: {
+            type: Array,
+            required: false,
+            default: []
+        },
+        followers: {
+            type: Array,
+            required: false,
+            default: []
         }
     },{
         versionKey: false

@@ -53,4 +53,53 @@ router.get('/get/:id', async (req, res) => {
 
 }) 
 
+// Ruta para dar follow a un usuario
+router.post('/follow', authRoutes, async (req, res) => {
+
+    var loggedUser = await User.findById(req.user.id) // follow
+    var user = await User.findById(req.body.id) // Followers
+
+    if (req.user.id == req.body.id){
+        return res.status(400).json({
+            error: 'No puedes seguirte a ti mismo'
+        })
+    }
+
+    if (!user.followers.includes(req.user.id) && !loggedUser.follow.includes(req.body.id)) {
+        let follow = loggedUser.follow
+        let followers = user.followers
+
+        follow.push(req.body.id)
+        followers.push(req.user.id)
+
+        await User.findByIdAndUpdate(req.user.id, {
+            follow: follow
+        }).exec()
+        await User.findByIdAndUpdate(req.body.id, {
+            followers: followers
+        }).exec()
+
+        loggedUser = await User.findById(req.user.id) // follow
+        user = await User.findById(req.body.id) // Followers
+
+        return res.json({
+            error: null,
+            loggedUser: loggedUser,
+            user: user
+        })
+
+    } else {
+        return res.json({
+            error: null,
+            msg: 'Ya estaba incluido'
+        })
+    }
+
+    return res.json({
+        test: 'test',
+        userLogged: loggedUser,
+        user: user
+    })
+})
+
 module.exports = router

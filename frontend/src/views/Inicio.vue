@@ -45,9 +45,9 @@
                                 alt="imagen de perfil"
                                 />
                             <div class="w-100">
-                                <h5 class="" @click="goTo(post.user)">
-                                    {{ post.nameUser }}
-                                    <small>@{{post.user}}</small>
+                                <h5 class="">
+                                    <small @click="goTo(post.user)">{{ post.nameUser }} </small>
+                                    <small @click="goTo(post.user)">@{{ post.user }}</small>
                                     <small class="text-muted"> {{timeAgo(post.date)}}</small>
                                 </h5>
                                 <div class="">

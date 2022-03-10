@@ -33,8 +33,22 @@ function getPost (id) {
     return axios.get(ENDPOINT_PATH+'f/get/'+id)
 }
 
+// Funcion para dar follow a un usuario 
+function follow (id, token) {
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'auth-token': token
+    }
+
+    return axios.post(ENDPOINT_PATH+'f/follow',id,{
+        headers: headers
+    })
+}
+
 export default {
     createPost,
     getAllPost, 
-    getPost
+    getPost,
+    follow
 }

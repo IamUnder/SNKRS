@@ -156,11 +156,14 @@ router.post('/login', async (req, res) => {
             email: user.email,
             descripcion: user.descripcion,
             id: user._id,
+            follow: user.follow,
+            followers: user.followers,
             token: token
         }
     })
 })
 
+// Ruta para obtener el usuario que se busca
 router.post('/user', async (req, res) => {
 
     const user = await User.findOne({ user: req.body.user })
@@ -179,7 +182,9 @@ router.post('/user', async (req, res) => {
             img: user.img,
             email: user.email,
             descripcion: user.descripcion,
-            id: user._id
+            id: user._id,
+            follow: user.follow,
+            followers: user.followers
         }
     })
 

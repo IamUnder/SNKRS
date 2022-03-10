@@ -19,13 +19,20 @@
 								<div class="w-100 ms-3">
 									<h4 class="my-0">{{user.name}}</h4>
 									<p class="text-muted">@{{user.user}}</p>
-									<!-- <button
+									<button
 										type="button"
 										class="btn btn-custom btn-xs waves-effect mb-2 waves-light"
-                                        @click="edit"
+                                        @click="follow"
 										>
 									Follow
-									</button> -->
+									</button>
+									<button
+										type="button"
+										class="btn btn-custom2 btn-xs waves-effect mb-2 waves-light"
+                                        @click="edit"
+										>
+									Unfollow
+									</button>
 								</div>
 							</div>
 							<div class="mt-3">
@@ -195,6 +202,7 @@
             user: {},
             estado: false,
 			posts: [],
+			token: [],
             // WIP
             coleccion: [],
             ventas: [],
@@ -210,6 +218,14 @@
                 this.estado = !this.estado
                 console.log(this.estado);
             },
+			follow () {
+				var body = {
+					id: this.user.id 
+				}
+				foro.follow(body, this.token).then( response => {
+					console.log(response.data);
+				}).catch()
+			},
             timeAgo (date) {
 
                 var postDate = new Date(date)
@@ -248,6 +264,9 @@
 			}).catch( () => {
 				this.$router.push('/inicio')
 			})
+
+			this.token = auth.getUser().token
+			console.log(this.token);
             console.log(this.user)
         },
     };
@@ -367,6 +386,11 @@
 
     .btn-custom {
         background: #F77F00;
+        color: #003049;
+    }
+
+	.btn-custom2 {
+        background: #EAE2B7;
         color: #003049;
     }
 </style>
