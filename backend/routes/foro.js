@@ -94,12 +94,58 @@ router.post('/follow', authRoutes, async (req, res) => {
             msg: 'Ya estaba incluido'
         })
     }
-
-    return res.json({
-        test: 'test',
-        userLogged: loggedUser,
-        user: user
-    })
 })
+
+// Ruta para dar unfollow a un usuario
+router.post('/unfollow', authRoutes, async (req, res) => {
+
+    var loggedUser = await User.findById(req.user.id) // follow
+    var user = await User.findById(req.body.id) // Followers
+
+    if (req.user.id == req.body.id){
+        return res.status(400).json({
+            error: 'No puedes darte unfollow a ti mismo'
+        })
+    }
+
+    if (user.followers.includes(req.user.id) && loggedUser.follow.includes(req.body.id)) {
+        let follow = removeItem(loggedUser.follow, req.body.id)
+        let followers = removeItem(user.followers, req.user.id)
+
+        await User.findByIdAndUpdate(req.user.id, {
+            follow: follow
+        }).exec()
+        await User.findByIdAndUpdate(req.body.id, {
+            followers: followers
+        }).exec()
+
+        loggedUser = await User.findById(req.user.id) // follow
+        user = await User.findById(req.body.id) // Followers
+
+        return res.json({
+            error: null,
+            loggedUser: loggedUser,
+            user: user
+        })
+
+    } else {
+        return res.json({
+            error: null,
+            msg: 'No se seguian'
+        })
+    }
+})
+
+// Funcion para elimiar el valor de un array
+function removeItem (array, value) {
+    
+    var i = array.indexOf( value );
+ 
+    if ( i !== -1 ) {
+        array.splice( i, 1 );
+    }
+
+    return array
+}
 
 module.exports = router

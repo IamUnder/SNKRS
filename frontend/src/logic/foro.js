@@ -46,9 +46,23 @@ function follow (id, token) {
     })
 }
 
+// Funcion para dar unfollow a un usuario 
+function unfollow (id, token) {
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'auth-token': token
+    }
+
+    return axios.post(ENDPOINT_PATH+'f/unfollow',id,{
+        headers: headers
+    })
+}
+
 export default {
     createPost,
     getAllPost, 
     getPost,
-    follow
+    follow,
+    unfollow
 }

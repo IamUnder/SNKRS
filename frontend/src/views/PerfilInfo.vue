@@ -29,7 +29,7 @@
 									<button
 										type="button"
 										class="btn btn-custom2 btn-xs waves-effect mb-2 waves-light"
-                                        @click="edit"
+                                        @click="unfollow"
 										>
 									Unfollow
 									</button>
@@ -223,6 +223,14 @@
 					id: this.user.id 
 				}
 				foro.follow(body, this.token).then( response => {
+					console.log(response.data);
+				}).catch()
+			},
+			unfollow () {
+				var body = {
+					id: this.user.id 
+				}
+				foro.unfollow(body, this.token).then( response => {
 					console.log(response.data);
 				}).catch()
 			},
