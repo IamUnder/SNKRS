@@ -77,16 +77,16 @@
 						<div class="card-body text-center">
 							<div class="row">
 								<div class="col-4 border-end border-light">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Coleccion</h5>
-									<h2 class="mb-0 fw-bold">{{coleccion.length}}</h2>
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Post</h5>
+									<h2 class="mb-0 fw-bold">{{posts.length}}</h2>
 								</div>
 								<div class="col-4 border-end border-light">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Ventas</h5>
-									<h2 class="mb-0 fw-bold">{{ventas.length}}</h2>
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Follows</h5>
+									<h2 class="mb-0 fw-bold">{{user.follow.length}}</h2>
 								</div>
-								<div class="col-4">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Vendido</h5>
-									<h2 class="mb-0 fw-bold">{{vendido}}</h2>
+								<div class="col-4 border-end border-light">
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Followers</h5>
+									<h2 class="mb-0 fw-bold">{{user.followers.length}}</h2>
 								</div>
 							</div>
 						</div>
@@ -155,7 +155,7 @@
 									<div class="w-100">
 										<h5 class="">
                                             {{post.nameUser}}
-											<small class="text-muted">{{ timeAgo(post.date) }}</small>
+											<small @click="goToPost(post._id)" class="text-muted">{{ timeAgo(post.date) }}</small>
 										</h5>
 										<div class="">
 											{{ post.body }}
@@ -258,11 +258,7 @@
             userName: "",
             name: "",
             posts: [],
-            post: "",
-            // WIP
-            coleccion: [],
-            ventas: [],
-            vendido: 0
+            post: ""
         }),
         methods: {
             edit (confirm) {
@@ -334,7 +330,15 @@
                 foro.getPost(this.user.id).then(response => {
                 this.posts = response.data.posts
                 })
-            }      
+            },
+			goToPost (id){
+				this.$router.push({
+					name: 'SNRKS: Post',
+					params: {
+						id: id
+					}
+				})
+			}      
         },
         mounted() {
             this.user = auth.getUser()

@@ -59,10 +59,16 @@ function unfollow (id, token) {
     })
 }
 
+// Funcion para recuperar un post en concreto
+function getOnePost (id) {
+    return axios.post(ENDPOINT_PATH+'f/getPost/'+id)
+}
+
 export default {
     createPost,
     getAllPost, 
     getPost,
     follow,
-    unfollow
+    unfollow,
+    getOnePost
 }

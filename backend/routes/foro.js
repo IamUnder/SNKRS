@@ -30,10 +30,14 @@ router.post('/create', authRoutes, async (req, res) => {
 
 })
 
-// Ruta de obtencion de todos los post (Provisional)
+// Ruta de obtencion de todos los post de los usuarios a los que se sigue
 router.get('/get', authRoutes, async (req, res) => {
 
-    const posts = await Post.find().sort({_id: -1})
+    var user = await User.findById(req.user.id)
+    var follow = user.follow
+    follow.push(req.user.id)
+
+    const posts = await Post.find({idUser: { $in: follow }}).sort({_id: -1})
 
     return res.json({
         error: null,
@@ -58,6 +62,8 @@ router.post('/follow', authRoutes, async (req, res) => {
 
     var loggedUser = await User.findById(req.user.id) // follow
     var user = await User.findById(req.body.id) // Followers
+
+    console.log(req.user);
 
     if (req.user.id == req.body.id){
         return res.status(400).json({
@@ -90,7 +96,7 @@ router.post('/follow', authRoutes, async (req, res) => {
 
     } else {
         return res.json({
-            error: null,
+            error: true,
             msg: 'Ya estaba incluido'
         })
     }
@@ -130,10 +136,35 @@ router.post('/unfollow', authRoutes, async (req, res) => {
 
     } else {
         return res.json({
-            error: null,
+            error: true,
             msg: 'No se seguian'
         })
     }
+})
+
+// Ruta para obtener un post en concreto con su cadena
+router.post('/getPost/:id', async (req, res) => {
+
+    var post = await Post.findById(req.params.id)
+    var parent = []
+    var reply = []
+
+    if (!post.parent == '') {
+        parent = await Post.findById(post.parent)
+    }
+
+    if (post.reply.length != 0) {
+        reply = await Post.find({_id: { $in: post.reply }}).sort({_id: -1})
+    }
+
+
+    return res.json({
+        error: null,
+        post: post,
+        parent: parent,
+        reply: reply,
+    })
+
 })
 
 // Funcion para elimiar el valor de un array

@@ -19,20 +19,26 @@
 								<div class="w-100 ms-3">
 									<h4 class="my-0">{{user.name}}</h4>
 									<p class="text-muted">@{{user.user}}</p>
-									<button
-										type="button"
-										class="btn btn-custom btn-xs waves-effect mb-2 waves-light"
-                                        @click="follow"
-										>
-									Follow
-									</button>
-									<button
-										type="button"
-										class="btn btn-custom2 btn-xs waves-effect mb-2 waves-light"
-                                        @click="unfollow"
-										>
-									Unfollow
-									</button>
+									<template v-if="user.id != loggedUser.id">
+										<template v-if="!user.followers.includes(loggedUser.id)">
+											<button
+											type="button"
+											class="btn btn-custom btn-xs waves-effect mb-2 waves-light"
+											@click="follow"
+											>
+												Follow
+											</button>
+										</template>
+										<template v-else>
+											<button
+											type="button"
+											class="btn btn-custom2 btn-xs waves-effect mb-2 waves-light"
+											@click="unfollow"
+											>
+												Unfollow
+											</button>
+										</template>
+									</template>
 								</div>
 							</div>
 							<div class="mt-3">
@@ -52,16 +58,16 @@
 						<div class="card-body text-center">
 							<div class="row">
 								<div class="col-4 border-end border-light">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Coleccion</h5>
-									<h2 class="mb-0 fw-bold">{{coleccion.length}}</h2>
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Post</h5>
+									<h2 class="mb-0 fw-bold">{{posts.length}}</h2>
 								</div>
 								<div class="col-4 border-end border-light">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Ventas</h5>
-									<h2 class="mb-0 fw-bold">{{ventas.length}}</h2>
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Follows</h5>
+									<h2 class="mb-0 fw-bold">{{user.follow.length}}</h2>
 								</div>
-								<div class="col-4">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Vendido</h5>
-									<h2 class="mb-0 fw-bold">{{vendido}}</h2>
+								<div class="col-4 border-end border-light">
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Followers</h5>
+									<h2 class="mb-0 fw-bold">{{user.followers.length}}</h2>
 								</div>
 							</div>
 						</div>
@@ -103,7 +109,7 @@
 									<div class="w-100">
 										<h5 class="">
 											{{ user.name }}
-											<small class="text-muted"> {{ timeAgo(post.date) }} </small>
+											<small @click="goToPost(post._id)" class="text-muted"> {{timeAgo(post.date)}}</small>
 										</h5>
 										<div class="">
 											{{ post.body }}
@@ -199,14 +205,11 @@
             navbar,
         },
         data: () => ({
-            user: {},
+            user: [],
+			loggedUser: {},
             estado: false,
 			posts: [],
-			token: [],
-            // WIP
-            coleccion: [],
-            ventas: [],
-            vendido: 0
+			token: []
         }),
         methods: {
             edit () {
@@ -223,16 +226,32 @@
 					id: this.user.id 
 				}
 				foro.follow(body, this.token).then( response => {
-					console.log(response.data);
-				}).catch()
+					if (response.data.error != true) {
+						var lUser = response.data.loggedUser
+						var tUser = auth.getUser()
+						lUser.id = lUser._id
+						lUser.token = tUser.token
+						auth.setUser(lUser)
+						this.user = response.data.user
+						this.user.id = response.data.user._id
+					}
+				})
 			},
 			unfollow () {
 				var body = {
 					id: this.user.id 
 				}
 				foro.unfollow(body, this.token).then( response => {
-					console.log(response.data);
-				}).catch()
+					if (response.data.error != true) {
+						var lUser = response.data.loggedUser
+						var tUser = auth.getUser()
+						lUser.id = lUser._id
+						lUser.token = tUser.token
+						auth.setUser(lUser)
+						this.user = response.data.user
+						this.user.id = response.data.user._id
+					}
+				})
 			},
             timeAgo (date) {
 
@@ -261,11 +280,20 @@
                     return "Hace " + Math.floor(interval) + " minutos";
                 }
                 return "Hace " + Math.floor(seconds) + " seconds";
-            }
+            },
+			goToPost (id){
+				this.$router.push({
+					name: 'SNRKS: Post',
+					params: {
+						id: id
+					}
+				})
+			}
         },
         mounted() { 
 			auth.getOneUser(this.$route.params.user).then(response => {
 				this.user = response.data.user
+				this.loggedUser = auth.getUser()
 				foro.getPost(this.user.id).then(response => {
 					this.posts = response.data.posts
 				})
@@ -274,8 +302,6 @@
 			})
 
 			this.token = auth.getUser().token
-			console.log(this.token);
-            console.log(this.user)
         },
     };
 </script>

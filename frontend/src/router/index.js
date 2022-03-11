@@ -7,6 +7,7 @@ import Perfil from '@/views/Perfil.vue'
 import PerfilUser from '@/views/PerfilInfo.vue'
 import CompraVenta from '@/views/CompraVenta.vue'
 import Tracking from '@/views/Tracking.vue'
+import Post from '@/views/Post.vue'
 
 Vue.use(VueRouter)
 
@@ -46,6 +47,12 @@ const routes = [
     name: 'SNRKS: Perfil',
     component: PerfilUser,
     meta: { tittle: 'SNRKS: Perfil' }
+  },
+  {
+    path: '/Post/:id',
+    name: 'SNRKS: Post',
+    component: Post,
+    meta: { tittle: 'SNRKS: Post' }
   },
   {
     path: '/Mercado',
