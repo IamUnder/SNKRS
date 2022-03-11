@@ -36,32 +36,39 @@
                 </div>
                 <hr>
                 <div class="row mt-8 mr-2">
-                    <div class="border p-2 mb-3 ml-3" v-for="post in posts" :key="post._id">
-                        <div class="d-flex align-items-start">
-                            <!-- Imagen de perfil WIP -->
-                            <img
-                                class="me-2 avatar-sm rounded-circle"
-                                src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                                alt="imagen de perfil"
-                                />
-                            <div class="w-100">
-                                <h5 class="">
-                                    <small @click="goTo(post.user)">{{ post.nameUser }} </small>
-                                    <small @click="goTo(post.user)">@{{ post.user }}</small>
-                                    <small class="text-muted"> {{timeAgo(post.date)}}</small>
-                                </h5>
-                                <div class="">
-                                    {{ post.body }}
-                                    <br />
-                                    <a
-                                        href="javascript: void(0);"
-                                        class="text-muted font-13 d-inline-block mt-2"
-                                        ><i class="mdi mdi-reply"></i> Reply</a
-                                        >
+                    <template v-if="post.length === 0">
+                        <div class="border p-2 mb-3 ml-3" v-for="post in posts" :key="post._id">
+                            <div class="d-flex align-items-start">
+                                <!-- Imagen de perfil WIP -->
+                                <img
+                                    class="me-2 avatar-sm rounded-circle"
+                                    src="https://bootdey.com/img/Content/avatar/avatar4.png"
+                                    alt="imagen de perfil"
+                                    />
+                                <div class="w-100">
+                                    <h5 class="">
+                                        <small @click="goTo(post.user)">{{ post.nameUser }} </small>
+                                        <small @click="goTo(post.user)">@{{ post.user }}</small>
+                                        <small class="text-muted"> {{timeAgo(post.date)}}</small>
+                                    </h5>
+                                    <div class="">
+                                        {{ post.body }}
+                                        <br />
+                                        <a
+                                            href="javascript: void(0);"
+                                            class="text-muted font-13 d-inline-block mt-2"
+                                            ><i class="mdi mdi-reply"></i> Reply</a
+                                            >
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
+                    <template v-else>
+                        <h3 class="header-title mb-3 text-center">
+                            Aun no sigues a nadie 
+                        </h3>
+                    </template>
                 </div>
             </div>
         </div>
