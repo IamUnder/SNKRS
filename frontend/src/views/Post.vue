@@ -4,7 +4,7 @@
         <navbar/>
 
         <!-- Contenido -->
-        <div class="main">
+        <div class="main" v-if="post">
             <div class="container">
                 <div class="row mb-3">
                     <div class="border p-2 mb-3 ml-3" v-if="post">
@@ -27,8 +27,10 @@
                                     <a
                                         href="javascript: void(0);"
                                         class="text-muted font-13 d-inline-block mt-2"
+                                        @click="responder(post._id)"
                                         ><i class="mdi mdi-reply"></i> Reply</a
                                         >
+                                    <small @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
                                 </div>
                             </div>
                         </div> 
@@ -36,6 +38,8 @@
                 </div>
             </div>
         </div>
+        {{reply}}
+        <respuesta class="display" id="modal" ref="modal" @cerrar="toggle"/>
     </div>
 </template>
 
@@ -43,17 +47,20 @@
     
      // Importacion de componentes
     import navbar from "@/components/navbar.vue";
-    //import auth from '@/logic/auth.js'
+    import respuesta from "@/components/respuesta.vue"
+    import auth from '@/logic/auth.js'
 	import foro from '@/logic/foro.js'
 
     export default {
         components: {
-            navbar
+            navbar,
+            respuesta
         },
         data: () => ({
             post: [],
             parent: [],
-            reply: []
+            reply: [],
+            token: ''
         }),
         methods: {
             goTo (user) {
@@ -99,14 +106,32 @@
                     return "Hace " + Math.floor(interval) + " minutos";
                 }
                 return "Hace " + Math.floor(seconds) + " seconds";
+            },
+            getPost() {
+                foro.getOnePost(this.$route.params.id).then(response => {
+                    this.post = response.data.post
+                    this.parent = response.data.parent
+                    this.reply = response.data.reply
+                })
+            },
+            responder (id) {
+                
+                this.toggle()
+                this.$refs.modal.respuesta(id)
+                
+            },
+            toggle () {
+                var modal = document.getElementById('modal')
+
+                modal.classList.toggle('display')
+
+                this.getPost()
             }
         },
         mounted() {
-            foro.getOnePost(this.$route.params.id).then(response => {
-                this.post = response.data.post
-                this.parent = response.data.parent
-                this.reply = response.data.reply
-            })
+            this.getPost()
+
+            this.token = auth.getUser().token
         },
     }
 </script>
@@ -141,5 +166,13 @@
 
     .rounded-circle {
         border-radius: 50%!important;
+    }
+    
+    .display {
+        display: none
+    }
+
+    a {
+        text-decoration: none;
     }
 </style>
