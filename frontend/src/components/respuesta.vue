@@ -19,7 +19,7 @@
                                 <div class="float-end">
                                     <button
                                         type="submit"
-                                        class="btn btn-sm btn-custom waves-effect waves-light"
+                                        class="btn btn-sm btn-custom waves-effect waves-light mr-4"
                                         @click="sendPost"
                                         >
                                     Post
@@ -116,6 +116,11 @@ export default {
 
     .btn-custom {
         background: #F77F00;
+        color: #003049;
+    }
+
+    .btn-custom2 {
+        background: #D62828;
         color: #003049;
     }
 </style>
