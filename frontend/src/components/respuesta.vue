@@ -45,6 +45,10 @@
 </template>
 
 <script>
+import Auth from "@/logic/auth.js"
+import Foro from "@/logic/foro.js"
+
+
 export default {
     components: {
 
@@ -63,8 +67,15 @@ export default {
             this.id = id
         },
         sendPost () {
-            console.log(this.post);
+            Foro.reply(this.post, this.id, this.token).then(() => {
+                this.cerrar()
+            }).catch(() => {
+                this.cerrar()
+            })
         }
+    },
+    mounted() {
+        this.token = Auth.getUser().token
     },
 }
 </script>

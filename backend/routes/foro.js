@@ -30,6 +30,37 @@ router.post('/create', authRoutes, async (req, res) => {
 
 })
 
+// Ruta de creacion de respuesta a post
+router.post('/reply', authRoutes, async (req, res) => {
+    const user = await User.findById(req.user.id)
+    const parent = await Post.findById(req.body.parentId)
+    var reply = parent.reply
+    
+    const post = new Post({
+        idUser: req.user.id,
+        body: req.body.post,
+        nameUser: user.name,
+        user: user.user,
+        parent: req.body.parentId
+    })
+
+    reply.push(post._id)
+    
+    try {
+        const savedPost = await post.save()
+        const updatedPost = await Post.findByIdAndUpdate(req.body.parentId, {reply: reply})
+        return res.status(201).json({
+            error: null,
+            mensaje: 'Respuesta creada correctamente'
+        })
+    } catch (error) {
+        return res.status(400).json({
+            error: error
+        })
+    }
+    
+})
+
 // Ruta de obtencion de todos los post de los usuarios a los que se sigue
 router.get('/get', authRoutes, async (req, res) => {
 

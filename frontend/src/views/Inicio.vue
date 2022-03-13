@@ -125,6 +125,8 @@ export default {
             var modal = document.getElementById('modal')
 
             modal.classList.toggle('display')
+
+            this.getAllPost()
         },
         timeAgo (date) {
 

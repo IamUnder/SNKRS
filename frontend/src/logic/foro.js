@@ -15,6 +15,23 @@ function createPost (post, token) {
     })
 }
 
+// Funcion para crear la respuesta
+function reply (post, parentId, token) {
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'auth-token': token
+    }
+    const body = {
+        parentId: parentId,
+        post: post
+    }
+
+    return axios.post(ENDPOINT_PATH+'f/reply',body,{
+        headers: headers
+    })
+}
+
 // Funcion para recuperar todos los post
 function getAllPost (token) {
     const headers = {
@@ -70,5 +87,6 @@ export default {
     getPost,
     follow,
     unfollow,
-    getOnePost
+    getOnePost,
+    reply
 }
