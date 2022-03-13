@@ -57,6 +57,7 @@
                                         <a
                                             href="javascript: void(0);"
                                             class="text-muted font-13 d-inline-block mt-2"
+                                            @click="responder(post._id)"
                                             ><i class="mdi mdi-reply"></i> Reply</a
                                             >
                                         <small @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
@@ -73,18 +74,21 @@
                 </div>
             </div>
         </div>
+        <respuesta class="display" id="modal" ref="modal" @cerrar="toggle"/>
     </div>
 </template>
 
 <script>
 // Importacion de componentes
 import navbar from "@/components/navbar.vue"
+import respuesta from "@/components/respuesta.vue"
 import foro from "@/logic/foro.js"
 import auth from "@/logic/auth.js"
 
 export default {
     components: {
-        navbar
+        navbar,
+        respuesta
     },
     data: () => ({
         user: {},
@@ -110,6 +114,17 @@ export default {
             foro.getAllPost(this.user.token).then( response => {
                 this.posts = response.data.posts
             })
+        },
+        responder (id) {
+            
+            this.toggle()
+            this.$refs.modal.respuesta(id)
+            
+        },
+        toggle () {
+            var modal = document.getElementById('modal')
+
+            modal.classList.toggle('display')
         },
         timeAgo (date) {
 
@@ -160,6 +175,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+    .display {
+        display: none
+    }
+
     .main {
         margin-top: 5%;
         margin-left: 5%;
@@ -189,5 +208,9 @@ export default {
 
     .rounded-circle {
         border-radius: 50%!important;
+    }
+
+    a {
+        text-decoration: none;
     }
 </style>
