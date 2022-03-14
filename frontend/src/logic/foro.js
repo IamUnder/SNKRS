@@ -32,6 +32,20 @@ function reply (post, parentId, token) {
     })
 }
 
+function fav (id, token) {
+    const headers = {
+        'Content-Type': 'application/json',
+        'auth-token': token
+    }
+    const body = {
+        id: id
+    }
+
+    return axios.post(ENDPOINT_PATH+'f/fav',body,{
+        headers: headers
+    })
+}
+
 // Funcion para recuperar todos los post
 function getAllPost (token) {
     const headers = {
@@ -88,5 +102,6 @@ export default {
     follow,
     unfollow,
     getOnePost,
-    reply
+    reply,
+    fav
 }

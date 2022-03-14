@@ -60,6 +60,15 @@
                                             @click="responder(post._id)"
                                             ><i class="mdi mdi-reply"></i> Reply</a
                                             >
+                                        <a
+                                            href="javascript: void(0);"
+                                            class="text-muted font-13 d-inline-block mt-2 ml-2"
+                                            @click="fav(post._id)"
+                                            >
+                                            <i class="mdi mdi-star" v-if="post.fav.includes(user.id)"></i>
+                                            <i class="mdi mdi-star-outline" v-else></i>
+                                            Favorito ({{ post.fav.length }})
+                                        </a>
                                         <small @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
                                     </div>
                                 </div>
@@ -170,6 +179,14 @@ export default {
                 params: {
                     id: id
                 }
+            })
+        },
+        fav (id) {
+            foro.fav(id, this.user.token).then(response => {
+                console.log(response.data);
+                this.getAllPost()
+            }).catch(() =>{
+                this.getAllPost
             })
         }
     },

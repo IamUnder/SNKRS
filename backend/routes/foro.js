@@ -58,7 +58,7 @@ router.post('/reply', authRoutes, async (req, res) => {
             error: error
         })
     }
-    
+
 })
 
 // Ruta de obtencion de todos los post de los usuarios a los que se sigue
@@ -195,6 +195,37 @@ router.post('/getPost/:id', async (req, res) => {
         parent: parent,
         reply: reply,
     })
+
+})
+
+// Ruta para dar fav a un mensaje
+router.post('/fav', authRoutes, async (req, res) => {
+
+    var post = await Post.findById(req.body.id)
+    var fav = post.fav
+
+    // Comprobamos que el array de fav contiene o no la id del usuario
+    if (fav.includes(req.user.id)) { // Si lo incluye lo borramos
+        fav = removeItem(fav, req.user.id)
+    } else { // Si no esta, lo incluimos
+        fav.push(req.user.id)
+    }
+
+    try {
+        await Post.findByIdAndUpdate(req.body.id, {
+            fav: fav
+        })
+
+        return res.json({
+            error:  null,
+            msg: 'Operación correcta'
+        })
+    } catch (error) {
+        return res.json({
+            error:  true,
+            msg: error
+        })
+    }
 
 })
 

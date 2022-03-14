@@ -29,6 +29,10 @@ const postSchema = mongoose.Schema({
     reply: {
         type: Array,
         default: []
+    },
+    fav: {
+        type: Array,
+        default: []
     }
 },{
     versionKey: false
