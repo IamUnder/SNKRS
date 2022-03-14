@@ -59,15 +59,15 @@
 							<div class="row">
 								<div class="col-4 border-end border-light">
 									<h5 class="text-muted mt-1 mb-2 fw-normal">Post</h5>
-									<h2 class="mb-0 fw-bold">{{posts.length}}</h2>
+									<h2 v-if="posts" class="mb-0 fw-bold">{{posts.length}}</h2>
 								</div>
 								<div class="col-4 border-end border-light">
 									<h5 class="text-muted mt-1 mb-2 fw-normal">Follows</h5>
-									<h2 class="mb-0 fw-bold">{{user.follow.length}}</h2>
+									<h2 v-if="user.follow" class="mb-0 fw-bold">{{user.follow.length}}</h2>
 								</div>
 								<div class="col-4 border-end border-light">
 									<h5 class="text-muted mt-1 mb-2 fw-normal">Followers</h5>
-									<h2 class="mb-0 fw-bold">{{user.followers.length}}</h2>
+									<h2 v-if="user.followers" class="mb-0 fw-bold">{{user.followers.length}}</h2>
 								</div>
 							</div>
 						</div>
@@ -120,6 +120,15 @@
 												@click="responder(post._id)"
 												><i class="mdi mdi-reply"></i> Reply</a
 												>
+											<a
+                                            href="javascript: void(0);"
+                                            class="text-muted font-13 d-inline-block mt-2 ml-2"
+                                            @click="fav(post._id)"
+                                            >
+                                            <i class="mdi mdi-star" v-if="post.fav.includes(loggedUser.id)"></i>
+                                            <i class="mdi mdi-star-outline" v-else></i>
+                                            Favorito ({{ post.fav.length }})
+											</a>
 											<small @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
 										</div>
 									</div>
@@ -212,7 +221,7 @@
         },
         data: () => ({
             user: [],
-			loggedUser: {},
+			loggedUser: [],
             estado: false,
 			posts: [],
 			token: []
@@ -318,6 +327,14 @@
 			}).catch( () => {
 				this.$router.push('/inicio')
 			})
+			},
+			fav (id) {
+				foro.fav(id, this.token).then(response => {
+					console.log(response.data);
+					this.getAllPost()
+				}).catch(() =>{
+					this.getAllPost
+				})
 			}
         },
         mounted() { 

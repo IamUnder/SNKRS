@@ -78,15 +78,15 @@
 							<div class="row">
 								<div class="col-4 border-end border-light">
 									<h5 class="text-muted mt-1 mb-2 fw-normal">Post</h5>
-									<h2 class="mb-0 fw-bold">{{posts.length}}</h2>
+									<h2 v-if="posts" class="mb-0 fw-bold">{{posts.length}}</h2>
 								</div>
 								<div class="col-4 border-end border-light">
 									<h5 class="text-muted mt-1 mb-2 fw-normal">Follows</h5>
-									<h2 class="mb-0 fw-bold">{{user.follow.length}}</h2>
+									<h2 v-if="user.follow" class="mb-0 fw-bold">{{user.follow.length}}</h2>
 								</div>
 								<div class="col-4 border-end border-light">
 									<h5 class="text-muted mt-1 mb-2 fw-normal">Followers</h5>
-									<h2 class="mb-0 fw-bold">{{user.followers.length}}</h2>
+									<h2 v-if="user.followers" class="mb-0 fw-bold">{{user.followers.length}}</h2>
 								</div>
 							</div>
 						</div>
