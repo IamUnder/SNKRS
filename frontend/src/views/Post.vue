@@ -30,7 +30,17 @@
                                         @click="responder(post._id)"
                                         ><i class="mdi mdi-reply"></i> Reply</a
                                         >
-                                    <small @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
+                                    <a
+                                        href="javascript: void(0);"
+                                        class="text-muted font-13 d-inline-block mt-2 ml-2"
+                                        @click="fav(post._id)"
+                                        v-if="post.fav"
+                                        >
+                                        <i class="mdi mdi-star" v-if="post.fav.includes(id)"></i>
+                                        <i class="mdi mdi-star-outline" v-else></i>
+                                        Favorito ({{ post.fav.length }})
+                                    </a>
+                                    <small v-if="post.reply" @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
                                 </div>
                             </div>
                         </div> 
@@ -60,6 +70,7 @@
             post: [],
             parent: [],
             reply: [],
+            id: '',
             token: ''
         }),
         methods: {
@@ -126,12 +137,21 @@
                 modal.classList.toggle('display')
 
                 this.getPost()
+            },
+            fav (id) {
+                foro.fav(id, this.token).then(response => {
+                    console.log(response.data);
+                    this.getPost()
+                }).catch(() =>{
+                    this.getPost()
+                })
             }
         },
         mounted() {
             this.getPost()
 
             this.token = auth.getUser().token
+            this.id = auth.getUser().id
         },
     }
 </script>
