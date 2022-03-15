@@ -9,21 +9,6 @@
 				<div class="col-xl-5">
 					<div class="card">
 						<div class="card-body">
-							<div class="dropdown float-end">
-								<a  
-									href="#"
-									class="dropdown-toggle arrow-none card-drop"
-									data-bs-toggle="dropdown"
-									aria-expanded="false"
-									>
-								<i class="mdi mdi-dots-vertical"></i>
-								</a>
-								<div class="dropdown-menu dropdown-menu-end">
-									<!-- Editar perfil WIP -->
-									<a href="javascript:void(0);" class="dropdown-item" v-on:click="edit()">Editar</a>
-                                    <a href="javascript:void(0);" class="dropdown-item" v-on:click="edit()">Confirmar cambios</a>
-								</div>
-							</div>
 							<div class="d-flex align-items-start">
                                 <!-- Imagen de perfil, si no tiene muestra esa WIP -->
 								<img 
@@ -34,13 +19,26 @@
 								<div class="w-100 ms-3">
 									<h4 class="my-0">{{user.name}}</h4>
 									<p class="text-muted">@{{user.user}}</p>
-									<!-- <button
-										type="button"
-										class="btn btn-custom btn-xs waves-effect mb-2 waves-light"
-                                        @click="edit"
-										>
-									Follow
-									</button> -->
+									<template v-if="user.id != loggedUser.id">
+										<template v-if="!user.followers.includes(loggedUser.id)">
+											<button
+											type="button"
+											class="btn btn-custom btn-xs waves-effect mb-2 waves-light"
+											@click="follow"
+											>
+												Follow
+											</button>
+										</template>
+										<template v-else>
+											<button
+											type="button"
+											class="btn btn-custom2 btn-xs waves-effect mb-2 waves-light"
+											@click="unfollow"
+											>
+												Unfollow
+											</button>
+										</template>
+									</template>
 								</div>
 							</div>
 							<div class="mt-3">
@@ -60,24 +58,24 @@
 						<div class="card-body text-center">
 							<div class="row">
 								<div class="col-4 border-end border-light">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Coleccion</h5>
-									<h2 class="mb-0 fw-bold">{{coleccion.length}}</h2>
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Post</h5>
+									<h2 v-if="posts" class="mb-0 fw-bold">{{posts.length}}</h2>
 								</div>
 								<div class="col-4 border-end border-light">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Ventas</h5>
-									<h2 class="mb-0 fw-bold">{{ventas.length}}</h2>
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Follows</h5>
+									<h2 v-if="user.follow" class="mb-0 fw-bold">{{user.follow.length}}</h2>
 								</div>
-								<div class="col-4">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Vendido</h5>
-									<h2 class="mb-0 fw-bold">{{vendido}}</h2>
+								<div class="col-4 border-end border-light">
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Followers</h5>
+									<h2 v-if="user.followers" class="mb-0 fw-bold">{{user.followers.length}}</h2>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="card">
 						<div class="card-body">
-							<h4 class="header-title mb-3">
-								Coleccion <font-awesome-icon icon="fa-solid fa-rectangle-list" />
+							<h4 class="header-title mb-3 text-center">
+								Coleccion <font-awesome-icon icon="fa-solid fa-circle-plus" />
 							</h4>
 							<div class="list-group">
 								<a href="javascript:void(0)" class="list-group-item list-group-item-action">
@@ -99,32 +97,8 @@
 				<div class="col-xl-7">
 					<div class="card">
 						<div class="card-body">
-							<!-- comment box -->
-							<form action="#" class="comment-area-box mb-3">
-								<span class="input-icon">
-								<textarea
-									rows="3"
-									class="form-control"
-									placeholder="Write something..."
-									></textarea>
-								</span>
-								<div class="comment-area-btn">
-									<div class="float-end">
-										<button
-											type="submit"
-											class="btn btn-sm btn-custom waves-effect waves-light"
-											>
-										Post
-										</button>
-									</div>
-									<div>
-										<a href="javascript:void(0)" class="btn btn-sm btn-light text-black-50"><i class="far fa-user"></i></a>
-									</div>
-								</div>
-							</form>
-							<!-- end comment box -->
 							<!-- Story Box-->
-							<div class="border border-light p-2 mb-3">
+							<div class="border p-2 mb-3" v-for="post in posts" :key="post.id">
                                 <!-- Post -->
 								<div class="d-flex align-items-start">
 									<img
@@ -134,27 +108,34 @@
 										/>
 									<div class="w-100">
 										<h5 class="">
-											Thelma Fridley
-											<small class="text-muted"> 1 hour ago</small>
+											{{ user.name }}
+											<small @click="goToPost(post._id)" class="text-muted"> {{timeAgo(post.date)}}</small>
 										</h5>
 										<div class="">
-											Cras sit amet nibh libero, in gravida nulla. Nulla vel
-											metus scelerisque ante sollicitudin. Cras purus odio,
-											vestibulum in vulputate at, tempus viverra turpis. Duis
-											sagittis ipsum. Praesent mauris. Fusce nec tellus sed
-											augue semper porta. Mauris massa.
+											{{ post.body }}
 											<br />
 											<a
 												href="javascript: void(0);"
 												class="text-muted font-13 d-inline-block mt-2"
+												@click="responder(post._id)"
 												><i class="mdi mdi-reply"></i> Reply</a
 												>
+											<a
+                                            href="javascript: void(0);"
+                                            class="text-muted font-13 d-inline-block mt-2 ml-2"
+                                            @click="fav(post._id)"
+                                            >
+                                            <i class="mdi mdi-star" v-if="post.fav.includes(loggedUser.id)"></i>
+                                            <i class="mdi mdi-star-outline" v-else></i>
+                                            Favorito ({{ post.fav.length }})
+											</a>
+											<small @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
 										</div>
 									</div>
 								</div>
                                 <!-- Respuesta -->
-								<div class="post-user-comment-box">
-									<div class="d-flex align-items-start">
+								<!-- <div class="post-user-comment-box"> -->
+									<!-- <div class="d-flex align-items-start">
 										<img
 											class="me-2 avatar-sm rounded-circle"
 											src="https://bootdey.com/img/Content/avatar/avatar3.png"
@@ -190,9 +171,9 @@
 												</div>
 											</div>
 										</div>
-									</div>
+									</div> -->
                                     <!-- Respuesta de respuesta, sin cuenta no deberia de salir --> 
-									<div class="d-flex align-items-start mt-2">
+									<!-- <div class="d-flex align-items-start mt-2">
 										<a class="pe-2" href="#">
 										<img
 											src="https://bootdey.com/img/Content/avatar/avatar1.png"
@@ -209,8 +190,8 @@
 												placeholder="Add comment"
 												/>
 										</div>
-									</div>
-								</div>
+									</div> -->
+								<!-- </div> -->
 							</div>
 						</div>
 					</div>
@@ -221,25 +202,29 @@
 			<!-- end row-->
 		</div>
 	</div>
+
+	<respuesta class="display" id="modal" ref="modal" @cerrar="toggle"/>
 </div>
 </template>
 
 <script>
     // Importacion de componentes
     import navbar from "@/components/navbar.vue";
+	import respuesta from "@/components/respuesta.vue"
     import auth from '@/logic/auth.js'
+	import foro from '@/logic/foro.js'
 
     export default {
         components: {
             navbar,
+			respuesta
         },
         data: () => ({
-            user: {},
+            user: [],
+			loggedUser: [],
             estado: false,
-            // WIP
-            coleccion: [],
-            ventas: [],
-            vendido: 0
+			posts: [],
+			token: []
         }),
         methods: {
             edit () {
@@ -250,16 +235,121 @@
 
                 this.estado = !this.estado
                 console.log(this.estado);
-            }
+            },
+			follow () {
+				var body = {
+					id: this.user.id 
+				}
+				foro.follow(body, this.token).then( response => {
+					if (response.data.error != true) {
+						var lUser = response.data.loggedUser
+						var tUser = auth.getUser()
+						lUser.id = lUser._id
+						lUser.token = tUser.token
+						auth.setUser(lUser)
+						this.user = response.data.user
+						this.user.id = response.data.user._id
+					}
+				})
+			},
+			unfollow () {
+				var body = {
+					id: this.user.id 
+				}
+				foro.unfollow(body, this.token).then( response => {
+					if (response.data.error != true) {
+						var lUser = response.data.loggedUser
+						var tUser = auth.getUser()
+						lUser.id = lUser._id
+						lUser.token = tUser.token
+						auth.setUser(lUser)
+						this.user = response.data.user
+						this.user.id = response.data.user._id
+					}
+				})
+			},
+            timeAgo (date) {
+
+                var postDate = new Date(date)
+                var seconds = Math.floor((new Date() - postDate) / 1000);
+
+                var interval = seconds / 31536000;
+
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " años";
+                }
+                interval = seconds / 2592000;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " meses";
+                }
+                interval = seconds / 86400;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " dias";
+                }
+                interval = seconds / 3600;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " horas";
+                }
+                interval = seconds / 60;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " minutos";
+                }
+                return "Hace " + Math.floor(seconds) + " seconds";
+            },
+			goToPost (id){
+				this.$router.push({
+					name: 'SNRKS: Post',
+					params: {
+						id: id
+					}
+				})
+			},
+			responder (id) {
+				
+				this.toggle()
+				this.$refs.modal.respuesta(id)
+				
+			},
+			toggle () {
+				var modal = document.getElementById('modal')
+
+				modal.classList.toggle('display')
+
+				this.getAllPost()
+			},
+			getAllPost() {
+				auth.getOneUser(this.$route.params.user).then(response => {
+				this.user = response.data.user
+				this.loggedUser = auth.getUser()
+				foro.getPost(this.user.id).then(response => {
+					this.posts = response.data.posts
+				})
+			}).catch( () => {
+				this.$router.push('/inicio')
+			})
+			},
+			fav (id) {
+				foro.fav(id, this.token).then(response => {
+					console.log(response.data);
+					this.getAllPost()
+				}).catch(() =>{
+					this.getAllPost
+				})
+			}
         },
-        mounted() {
-            this.user = auth.getUser()
-            console.log(this.user);
+        mounted() { 
+			this.getAllPost()
+
+			this.token = auth.getUser().token
         },
     };
 </script>
 
 <style lang="css" scoped>
+	.display {
+		display: none
+	}
+
     .main {
         margin-top: 5%;
         margin-left: 5%;
@@ -375,4 +465,17 @@
         background: #F77F00;
         color: #003049;
     }
+
+	.btn-custom2 {
+        background: #EAE2B7;
+        color: #003049;
+    }
+
+	.display {
+		display: none
+	}
+
+	a{
+		text-decoration: none;
+	}
 </style>

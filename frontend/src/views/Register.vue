@@ -79,7 +79,7 @@
 
               <!-- Boton --> 
               <div class="col-8 offset-2 mt-5">
-                  <v-btn type="submit" block color="#003049" class="text-light">LOGIN</v-btn>
+                  <v-btn type="submit" block color="#003049" class="text-light">REGISTRO</v-btn>
               </div>
 
               <div class="col-8 offset-2 mt-5 text-b">
@@ -129,7 +129,7 @@
           auth.register(this.name, this.email, this.password, this.user).then(response => {
             console.log(response.data);
 
-            this.$router.push("/Inicio")
+            this.$router.push("/")
           }).catch(error => {
             this.valid = false
             this.error = error.response.data.error

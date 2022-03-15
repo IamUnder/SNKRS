@@ -1,6 +1,6 @@
 // Declaracion de modulos
 const router = require('express').Router()
-const User = require('../models/Users')
+const User = require('../models/users')
 
 // Ruta de testing
 router.post('/s', (req, res) => {

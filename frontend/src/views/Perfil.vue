@@ -77,24 +77,24 @@
 						<div class="card-body text-center">
 							<div class="row">
 								<div class="col-4 border-end border-light">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Coleccion</h5>
-									<h2 class="mb-0 fw-bold">{{coleccion.length}}</h2>
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Post</h5>
+									<h2 v-if="posts" class="mb-0 fw-bold">{{posts.length}}</h2>
 								</div>
 								<div class="col-4 border-end border-light">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Ventas</h5>
-									<h2 class="mb-0 fw-bold">{{ventas.length}}</h2>
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Follows</h5>
+									<h2 v-if="user.follow" class="mb-0 fw-bold">{{user.follow.length}}</h2>
 								</div>
-								<div class="col-4">
-									<h5 class="text-muted mt-1 mb-2 fw-normal">Vendido</h5>
-									<h2 class="mb-0 fw-bold">{{vendido}}</h2>
+								<div class="col-4 border-end border-light">
+									<h5 class="text-muted mt-1 mb-2 fw-normal">Followers</h5>
+									<h2 v-if="user.followers" class="mb-0 fw-bold">{{user.followers.length}}</h2>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="card">
 						<div class="card-body">
-							<h4 class="header-title mb-3">
-								Coleccion <font-awesome-icon icon="fa-solid fa-rectangle-list" />
+							<h4 class="header-title mb-3 text-center">
+								Coleccion <font-awesome-icon icon="fa-solid fa-circle-plus"/> <!-- WIP -->
 							</h4>
 							<div class="list-group">
 								<a href="javascript:void(0)" class="list-group-item list-group-item-action">
@@ -117,12 +117,14 @@
 					<div class="card">
 						<div class="card-body">
 							<!-- comment box -->
-							<form action="#" class="comment-area-box mb-3">
+							<form action="javascript:void(0)" class="comment-area-box mb-3">
 								<span class="input-icon">
 								<textarea
 									rows="3"
 									class="form-control"
-									placeholder="Write something..."
+									placeholder="Que tienes que decir..."
+                                    required
+                                    v-model="post"
 									></textarea>
 								</span>
 								<div class="comment-area-btn">
@@ -130,6 +132,7 @@
 										<button
 											type="submit"
 											class="btn btn-sm btn-custom waves-effect waves-light"
+                                            @click="sendPost()"
 											>
 										Post
 										</button>
@@ -141,37 +144,44 @@
 							</form>
 							<!-- end comment box -->
 							<!-- Story Box-->
-							<div class="border border-light p-2 mb-3">
+							<div class="border p-2 mb-3" v-for="post in posts" :key="post.id">
                                 <!-- Post -->
 								<div class="d-flex align-items-start">
 									<img
 										class="me-2 avatar-sm rounded-circle"
 										src="https://bootdey.com/img/Content/avatar/avatar4.png"
-										alt="Generic placeholder image"
-										/>
+										alt="Foto del usuario" 
+										/> <!-- WIP -->
 									<div class="w-100">
 										<h5 class="">
-											Thelma Fridley
-											<small class="text-muted"> 1 hour ago</small>
+                                            {{post.nameUser}}
+											<small @click="goToPost(post._id)" class="text-muted">{{ timeAgo(post.date) }}</small>
 										</h5>
 										<div class="">
-											Cras sit amet nibh libero, in gravida nulla. Nulla vel
-											metus scelerisque ante sollicitudin. Cras purus odio,
-											vestibulum in vulputate at, tempus viverra turpis. Duis
-											sagittis ipsum. Praesent mauris. Fusce nec tellus sed
-											augue semper porta. Mauris massa.
+											{{ post.body }}
 											<br />
 											<a
 												href="javascript: void(0);"
 												class="text-muted font-13 d-inline-block mt-2"
+                                                @click="responder(post._id)"
 												><i class="mdi mdi-reply"></i> Reply</a
 												>
+                                            <a
+                                            href="javascript: void(0);"
+                                            class="text-muted font-13 d-inline-block mt-2 ml-2"
+                                            @click="fav(post._id)"
+                                            >
+                                            <i class="mdi mdi-star" v-if="post.fav.includes(user.id)"></i>
+                                            <i class="mdi mdi-star-outline" v-else></i>
+                                            Favorito ({{ post.fav.length }})
+                                            </a>
+                                            <small @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
 										</div>
 									</div>
 								</div>
                                 <!-- Respuesta -->
-								<div class="post-user-comment-box">
-									<div class="d-flex align-items-start">
+								<!-- <div class="post-user-comment-box"> -->
+									<!-- <div class="d-flex align-items-start">
 										<img
 											class="me-2 avatar-sm rounded-circle"
 											src="https://bootdey.com/img/Content/avatar/avatar3.png"
@@ -207,9 +217,9 @@
 												</div>
 											</div>
 										</div>
-									</div>
+									</div> -->
                                     <!-- Respuesta de respuesta, sin cuenta no deberia de salir --> 
-									<div class="d-flex align-items-start mt-2">
+									<!-- <div class="d-flex align-items-start mt-2">
 										<a class="pe-2" href="#">
 										<img
 											src="https://bootdey.com/img/Content/avatar/avatar1.png"
@@ -226,8 +236,8 @@
 												placeholder="Add comment"
 												/>
 										</div>
-									</div>
-								</div>
+									</div> -->
+								<!-- </div> -->
 							</div>
 						</div>
 					</div>
@@ -238,29 +248,31 @@
 			<!-- end row-->
 		</div>
 	</div>
+    <respuesta class="display" id="modal" ref="modal" @cerrar="toggle"/>
 </div>
 </template>
 
 <script>
     // Importacion de componentes
     import navbar from "@/components/navbar.vue";
+    import respuesta from "@/components/respuesta.vue"
     import auth from '@/logic/auth.js'
     import profile from '@/logic/options.js'
+    import foro from '@/logic/foro.js'
 
     export default {
         components: {
             navbar,
+            respuesta
         },
         data: () => ({
-            user: {},
+            user: [],
             estado: false,
             descripcion: "",
             userName: "",
             name: "",
-            // WIP
-            coleccion: [],
-            ventas: [],
-            vendido: 0
+            posts: [],
+            post: ""
         }),
         methods: {
             edit (confirm) {
@@ -287,6 +299,80 @@
                         console.log(error.response)
                     })
                 }
+            },
+            timeAgo (date) {
+
+                var postDate = new Date(date)
+                var seconds = Math.floor((new Date() - postDate) / 1000);
+
+                var interval = seconds / 31536000;
+
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " años";
+                }
+                interval = seconds / 2592000;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " meses";
+                }
+                interval = seconds / 86400;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " dias";
+                }
+                interval = seconds / 3600;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " horas";
+                }
+                interval = seconds / 60;
+                if (interval > 1) {
+                    return "Hace " + Math.floor(interval) + " minutos";
+                }
+                return "Hace " + Math.floor(seconds) + " seconds";
+            },
+            sendPost () {
+                if (this.post != "") {
+                    console.log('si?');
+                    const post = {
+                        post: this.post
+                    }
+                    foro.createPost(post, this.user.token).then(() => {
+                        this.getPost()
+                    })
+                    this.post = ""
+                }
+            },
+            getPost () {
+                foro.getPost(this.user.id).then(response => {
+                this.posts = response.data.posts
+                })
+            },
+			goToPost (id){
+				this.$router.push({
+					name: 'SNRKS: Post',
+					params: {
+						id: id
+					}
+				})
+			},
+            responder (id) {
+                
+                this.toggle()
+                this.$refs.modal.respuesta(id)
+                
+            },
+            toggle () {
+                var modal = document.getElementById('modal')
+
+                modal.classList.toggle('display')
+
+                this.getPost()
+            },
+            fav (id) {
+                foro.fav(id, this.user.token).then(response => {
+                    console.log(response.data);
+                    this.getAllPost()
+                }).catch(() =>{
+                    this.getAllPost
+                })
             }
         },
         mounted() {
@@ -295,6 +381,8 @@
             this.descripcion = this.user.descripcion || ""
             this.userName = this.user.user
             this.name = this.user.name
+
+            this.getPost()
         },
     };
 </script>
@@ -414,5 +502,13 @@
     .btn-custom {
         background: #F77F00;
         color: #003049;
+    }
+
+    .display {
+        display: none
+    }
+    
+    a {
+        text-decoration: none;
     }
 </style>

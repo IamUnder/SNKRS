@@ -27,8 +27,18 @@ function getUser () {
     return JSON.parse(user)
 }
 
+// Funcion para hacer logout
 function logOut () {
     cookies.remove("userLogged")
 }
 
-export default { login, register, setUser, getUser, logOut };
+// Funcion para recoger un usuario especifico
+function getOneUser (userData) {
+    const user = {
+        user: userData
+    }
+    console.log(user);
+    return axios.post(ENDPOINT_PATH+'/user',user)
+}
+
+export default { login, register, setUser, getUser, logOut, getOneUser };

@@ -1,6 +1,6 @@
 // Importacion de modulos
 const router = require('express').Router()
-    const User = require('../models/Users')
+const User = require('../models/users')
 const Joi = require('@hapi/joi')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -97,12 +97,12 @@ router.post('/register', async (req, res) => {
 
     try {
         const savedUser = await user.save()
-        res.status(201).json({
+        return res.status(201).json({
             error: null,
             mensaje: 'Usuario creado correctamente'
         })
     } catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             error: error
         })
     }
@@ -156,9 +156,38 @@ router.post('/login', async (req, res) => {
             email: user.email,
             descripcion: user.descripcion,
             id: user._id,
+            follow: user.follow,
+            followers: user.followers,
             token: token
         }
     })
+})
+
+// Ruta para obtener el usuario que se busca
+router.post('/user', async (req, res) => {
+
+    const user = await User.findOne({ user: req.body.user })
+
+    if (!user) {
+        return res.status(400).json({
+            error: 'Usuario no encontrado.'
+        })
+    }
+
+    return res.json({
+        error: null,
+        user: {
+            user: user.user,
+            name: user.name,
+            img: user.img,
+            email: user.email,
+            descripcion: user.descripcion,
+            id: user._id,
+            follow: user.follow,
+            followers: user.followers
+        }
+    })
+
 })
 
 module.exports = router;
