@@ -10,7 +10,7 @@
                             <textarea
                                 rows="3"
                                 class="form-control"
-                                placeholder="Que tienes que contar..."
+                                placeholder="Que tienes que responder..."
                                 v-model="post"
                                 required
                                 ></textarea>
@@ -22,7 +22,7 @@
                                         class="btn btn-sm btn-custom waves-effect waves-light mr-4"
                                         @click="sendPost"
                                         >
-                                    Post
+                                    Reply
                                     </button>
                                     <button
                                         type="submit"

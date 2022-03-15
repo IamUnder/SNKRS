@@ -68,7 +68,7 @@ router.get('/get', authRoutes, async (req, res) => {
     var follow = user.follow
     follow.push(req.user.id)
 
-    const posts = await Post.find({idUser: { $in: follow }}).sort({_id: -1})
+    const posts = await Post.find({idUser: { $in: follow }}).sort({_id: -1}).limit(50)
 
     return res.json({
         error: null,
@@ -185,7 +185,7 @@ router.post('/getPost/:id', async (req, res) => {
     }
 
     if (post.reply.length != 0) {
-        reply = await Post.find({_id: { $in: post.reply }}).sort({_id: -1})
+        reply = await Post.find({_id: { $in: post.reply }}).sort({_id: 1})
     }
 
 
