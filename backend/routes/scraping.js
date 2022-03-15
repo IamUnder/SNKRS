@@ -19,10 +19,11 @@ router.get('/release', async (req, res) => {
     try {
 
         const nike = await getNike()
-        
+        const adidas = await getAdidas()
         const release = new Release({
             week: getWeek(),
-            nike: nike
+            nike: nike,
+            adidas: adidas
         })
     
     
@@ -65,7 +66,7 @@ async function autoScroll(page){
     });
 }
 
-// Funcion que devuelve los valores
+// Funcion que devuelve los valores de nike
 async function getNike() {
 
     const url = process.env.RELEASENIKE 
@@ -117,6 +118,82 @@ async function getNike() {
                     modelo: vModelo[i],
                     nombre: vNombre[i],
                     fecha: vDia[i] + ' ' +  vMes[i],
+                    img: vImg[i],
+                    url: vUrl[i]
+                })
+            }
+
+            return value
+        })
+
+        await browser.close()
+
+    } catch (error) {
+        
+        console.log(error);
+
+    }
+
+    return releases
+
+}
+
+// Funcion que devuelve los valores de adidas
+async function getAdidas() {
+
+    const url = process.env.RELEASEADIDAS
+
+    try {
+        
+        // Abrimos una instacia del navegador y navegamos hasta la url
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox','--disable-setuid-sandbox']
+        })
+        const page = await browser.newPage()
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36');
+        await page.goto(url)
+        await page.setViewport({
+            width: 2560,
+            height: 1440
+        });
+        await autoScroll(page)
+
+        // Javascript que se ejecuta en el navegador que crea puppeteer
+        var releases = await page.evaluate(() => {
+
+            window.scrollBy(0, window.innerHeight)
+
+            // Declaramos el valor que devolveremos
+            var value = []
+            // Declaramos las variables a usar 
+            var vModelo = []
+            var vFecha = []
+            var vImg = []
+            var vUrl = []
+
+            // rellenamos las varibales 
+            document.querySelectorAll('.plc-product-card___1tVAm .glass-product-card .plc-product-name___2cofu').forEach(element => vModelo.push(element.innerHTML))
+            document.querySelectorAll('.plc-product-card___1tVAm .glass-product-card .plc-product-date___1zgO_ strong').forEach(element => vFecha.push(element.innerHTML))
+            document.querySelectorAll('.plc-product-card___1tVAm .glass-product-card img').forEach(element => vImg.push(element.src))
+            document.querySelectorAll('.plc-product-card___1tVAm a').forEach(element => vUrl.push(element.href))
+
+            // Calculamos los productos que estan agotados
+            var quitar = vModelo.length - vFecha.length // Calculamos los que hay que quitar
+
+            // Quitamos esos valores
+            for (let i = 0; i < quitar; i++) {
+                vModelo.shift() 
+                vImg.shift()
+                vUrl.shift()
+            }
+
+            // Creamos los objetos
+            for (let i = 0; i < vModelo.length; i++) {
+                
+                value.push({
+                    modelo: vModelo[i],
+                    fecha: vFecha[i],
                     img: vImg[i],
                     url: vUrl[i]
                 })

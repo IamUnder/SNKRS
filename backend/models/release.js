@@ -12,7 +12,7 @@ const releaseSchema = mongoose.Schema(
         },
         adidas: {
             type: Array,
-            required: false,
+            required: true,
         },
         date: {
             type: Date,
