@@ -38,7 +38,7 @@ function unfav (id, token) {
         id: id
     }
 
-    return axios.post(ENDPOINT_PATH+'s/unlike',body,{
+    return axios.post(ENDPOINT_PATH+'s/dislike',body,{
         headers: headers
     })
 }

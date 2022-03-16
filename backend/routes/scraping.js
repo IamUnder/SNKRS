@@ -145,6 +145,35 @@ router.post('/like', authRoutes, async (req, res) => {
     })
 })
 
+// Ruta para dar dislike a una oferta
+router.post('/dislike', authRoutes, async (req, res) => {
+
+    // Recuperamos la oferta a la que quiere incluirse
+    const oferta = await Oferta.findById(req.body.id)
+    var like = oferta.like
+    var dislike = oferta.dislike
+
+    // Comprobamos que no este el dislike dado ya, en ese caso lo quitamos
+    if (dislike.includes(req.user.id)) {
+        dislike = removeItem(dislike, req.user.id)
+    } else { // Si no tiene el dislike dado se lo ponemos
+        dislike.push(req.user.id)
+    }
+
+    // Comprobamos si le habia dado like a la oferta, si es asi lo quitamos
+    if (like.includes(req.user.id)) {
+        like = removeItem(like, req.user.id)
+    }
+
+    // Guardamos el nuevo valor
+    await Oferta.findByIdAndUpdate(req.body.id,{like: like, dislike: dislike})
+
+
+    return res.json({
+        error: null
+    })
+})
+
 // Funcion para hacer auto scroll
 async function autoScroll(page){
     await page.evaluate(async () => {

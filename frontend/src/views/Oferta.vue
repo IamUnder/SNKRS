@@ -10,7 +10,7 @@
                 <!-- Lanzamientos nike -->
                 <div class="row mb-3">
                     <div class="container mt-5">
-                        <h3><font-awesome-icon icon="fa-solid fa-angles-right" /> Proximos lanzamintos Adidas</h3>
+                        <h3><font-awesome-icon icon="fa-solid fa-angles-right" /> Ofertas Nike</h3>
                         <div class="table-responsive">
                             <table class="table text-white table-hover custom-table">
                                 <thead>
@@ -38,11 +38,11 @@
                                             <div class="d-flex align-items-center"><img class="rounded-circle" :src="ni.img" width="60"></div>
                                         </td>
                                         <td class="align-middle">
-                                            <i @click="fav(ni._id)" class="mdi mdi-thumb-up mr-2">{{ni.like.length}}</i>
-                                            <i @click="fav(ni._id)" class="mdi mdi-thumb-up-outline mr-2">{{ni.like.length}}</i>
+                                            <i @click="fav(ni._id)" class="mdi mdi-thumb-up mr-2" v-if="ni.like.includes(id)">{{ni.like.length}}</i>
+                                            <i @click="fav(ni._id)" class="mdi mdi-thumb-up-outline mr-2" v-else>{{ni.like.length}}</i>
 
-                                            <i @click="unfav(ni._id)" class="mdi mdi-thumb-down">{{ni.dislike.length}}</i>
-                                            <i @click="unfav(ni._id)" class="mdi mdi-thumb-down-outline">{{ni.dislike.length}}</i>
+                                            <i @click="unfav(ni._id)" class="mdi mdi-thumb-down" v-if="ni.dislike.includes(id)">{{ni.dislike.length}}</i>
+                                            <i @click="unfav(ni._id)" class="mdi mdi-thumb-down-outline" v-else>{{ni.dislike.length}}</i>
                                         </td>
                                         <td class="align-middle"><font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" @click="goTo(ni.url)"/></td>
                                     </tr>
@@ -54,7 +54,7 @@
                 <!-- Lanzamientos adidas -->
                 <div class="row mb-3">
                     <div class="container mt-5">
-                        <h3><font-awesome-icon icon="fa-solid fa-angles-right" /> Proximos lanzamintos Adidas</h3>
+                        <h3><font-awesome-icon icon="fa-solid fa-angles-right" /> Ofertas Adidas</h3>
                         <div class="table-responsive">
                             <table class="table text-white table-hover custom-table">
                                 <thead>
@@ -82,11 +82,11 @@
                                             <div class="d-flex align-items-center"><img class="rounded-circle" :src="ad.img" width="60"></div>
                                         </td>
                                         <td class="align-middle">
-                                            <i @click="fav(ad._id)" class="mdi mdi-thumb-up mr-2">{{ad.like.length}}</i>
-                                            <i @click="fav(ad._id)" class="mdi mdi-thumb-up-outline mr-2">{{ad.like.length}}</i>
+                                            <i @click="fav(ad._id)" class="mdi mdi-thumb-up mr-2" v-if="ad.like.includes(id)">{{ad.like.length}}</i>
+                                            <i @click="fav(ad._id)" class="mdi mdi-thumb-up-outline mr-2" v-else>{{ad.like.length}}</i>
 
-                                            <i @click="fav(ad._id)" class="mdi mdi-thumb-down">{{ad.dislike.length}}</i>
-                                            <i @click="fav(ad._id)" class="mdi mdi-thumb-down-outline">{{ad.dislike.length}}</i>
+                                            <i @click="fav(ad._id)" class="mdi mdi-thumb-down" v-if="ad.dislike.includes(id)">{{ad.dislike.length}}</i>
+                                            <i @click="fav(ad._id)" class="mdi mdi-thumb-down-outline" v-else>{{ad.dislike.length}}</i>
                                         </td>
                                         <td class="align-middle"><font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" @click="goTo(ad.url)"/></td>
                                     </tr>
