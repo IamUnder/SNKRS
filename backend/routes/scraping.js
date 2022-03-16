@@ -2,6 +2,7 @@
 const router = require('express').Router()
 const puppeteer = require('puppeteer')
 const Release = require('../models/release')
+const Oferta = require('../models/oferta')
 
 // Ruta para recojer los lanzamientos semanales
 router.get('/release', async (req, res) => {
@@ -49,11 +50,68 @@ router.get('/release', async (req, res) => {
 // Ruta para obtener las ofertas semanales
 router.get('/outlet', async (req, res) => {
 
-    //console.table(await getOutletNike());
-    console.log(await getOutletAdidas());
+    // Comprobamos si ya hay datos de la semana
+    const isWeekExist = await Oferta.findOne({week: getWeek()})
+    if (!isWeekExist) { // Si no existe lo generamos
+
+        // Generacion Nike
+        const nike = await getOutletNike()
+        nike.forEach(element => {
+
+            try {
+                
+                // Generamos el valor y lo introducimos en db
+                new Oferta({
+                    week: getWeek(),
+                    marca: 'nike',
+                    modelo: element.modelo,
+                    tipo: element.tipo,
+                    precio: element.precio,
+                    precioDescuento: element.precioDescuento,
+                    img: element.img,
+                    url: element.url
+                }).save()
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        });
+
+        // Generacion Adidas
+        const adidas = await getOutletAdidas()
+        adidas.forEach(element => {
+
+            try {
+                
+                // Generamos el valor y lo introducimos en db
+                new Oferta({
+                    week: getWeek(),
+                    marca: 'adidas',
+                    modelo: element.modelo,
+                    tipo: element.tipo,
+                    precio: element.precio,
+                    precioDescuento: element.precioDescuento,
+                    img: element.img,
+                    url: element.url
+                }).save()
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        });
+
+    }
+    
+    // Recojemos lo valores antes de mostrarlos
+    const ofertaNike = await Oferta.find({week: getWeek(), marca: 'nike'})
+    const ofertaAdidas = await Oferta.find({week: getWeek(), marca: 'adidas'})
 
     return res.json({
-        error: null
+        error: null,
+        nike: ofertaNike,
+        adidas: ofertaAdidas
     })
 })
 
@@ -303,7 +361,7 @@ async function getOutletAdidas() {
         
         // Abrimos una instacia del navegador y navegamos hasta la url
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             args: ['--no-sandbox','--disable-setuid-sandbox']
         })
         const page = await browser.newPage()
@@ -316,43 +374,43 @@ async function getOutletAdidas() {
         await autoScroll(page);
 
         // Javascript que se ejecuta en el navegador que crea puppeteer
-        // var releases = await page.evaluate(() => {
+        var releases = await page.evaluate(() => {
 
-        //     // Declaramos el valor que devolveremos
-        //     var value = []
-        //     // Declaramos las variables a usar 
-        //     var vModelo = []
-        //     var vTipo = []
-        //     var vPrecio = []
-        //     var vPrecioDescuento = []
-        //     var vImg = []
-        //     var vUrl = []
+            // Declaramos el valor que devolveremos
+            var value = []
+            // Declaramos las variables a usar 
+            var vModelo = []
+            var vTipo = []
+            var vPrecio = []
+            var vPrecioDescuento = []
+            var vImg = []
+            var vUrl = []
 
-        //     // rellenamos las varibales 
-        //     document.querySelectorAll('.product-card:nth-child(-n+8) .product-card__title').forEach(element => vModelo.push(element.innerHTML))
-        //     document.querySelectorAll('.product-card:nth-child(-n+8) .product-card__subtitle').forEach(element => vTipo.push(element.innerHTML))
-        //     document.querySelectorAll('.product-card:nth-child(-n+8) .is--striked-out').forEach(element => vPrecio.push(element.innerHTML.replace('&nbsp;','')))
-        //     document.querySelectorAll('.product-card:nth-child(-n+8) .is--current-price').forEach(element => vPrecioDescuento.push(element.innerHTML.replace('&nbsp;','')))
-        //     document.querySelectorAll('.product-card:nth-child(-n+8) img').forEach(element => vImg.push(element.src))
-        //     document.querySelectorAll('.product-card:nth-child(-n+8) a.product-card__link-overlay').forEach(element => vUrl.push(element.href))
+            // rellenamos las varibales 
+            document.querySelectorAll('.grid-item:nth-child(-n+8) .glass-product-card__title').forEach(element => vModelo.push(element.innerHTML))
+            document.querySelectorAll('.grid-item:nth-child(-n+8) .glass-product-card__category').forEach(element => vTipo.push(element.innerHTML))
+            document.querySelectorAll('.grid-item:nth-child(-n+8) .gl-price-item--crossed').forEach(element => vPrecio.push(element.innerHTML.replace('€ ','')+'€'))
+            document.querySelectorAll('.grid-item:nth-child(-n+8) .gl-price-item--sale').forEach(element => vPrecioDescuento.push(element.innerHTML.replace('€ ','')+'€'))
+            document.querySelectorAll('.grid-item:nth-child(-n+8) img.glass-product-card__image').forEach(element => vImg.push(element.src))
+            document.querySelectorAll('.grid-item:nth-child(-n+8) a.glass-product-card__assets-link').forEach(element => vUrl.push(element.href))
 
-        //     // Creamos los objetos
-        //     for (let i = 0; i < vModelo.length; i++) {
+            // Creamos los objetos
+            for (let i = 0; i < vModelo.length; i++) {
 
-        //         value.push({
-        //             modelo: vModelo[i],
-        //             tipo: vTipo[i],
-        //             precio: vPrecio[i],
-        //             precioDescuento: vPrecioDescuento[i],
-        //             img: vImg[i],
-        //             url: vUrl[i]
-        //         })
-        //     }
+                value.push({
+                    modelo: vModelo[i],
+                    tipo: vTipo[i],
+                    precio: vPrecio[i],
+                    precioDescuento: vPrecioDescuento[i],
+                    img: vImg[i],
+                    url: vUrl[i]
+                })
+            }
 
-        //     return value
-        // })
+            return value
+        })
 
-        //await browser.close()
+        await browser.close()
 
     } catch (error) {
         
@@ -360,7 +418,7 @@ async function getOutletAdidas() {
 
     }
 
-    return true
+    return releases
 
 }
 
