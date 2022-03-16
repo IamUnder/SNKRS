@@ -31,9 +31,9 @@
                                 <span class="nav__name">Perfil</span>
                             </a>
                             
-                            <a href="/Mercado" class="nav__link">
+                            <a href="/Oferta" class="nav__link">
                                 <font-awesome-icon icon="fa-solid fa-dollar-sign" class="nav__icon"/>
-                                <span class="nav__name">Compra / Venta</span>
+                                <span class="nav__name">Oferta</span>
                             </a>
 
                             <a href="/Tracking" class="nav__link">
@@ -90,7 +90,7 @@
                 case "/User":
                     linkColor[1].classList.add('active')
                     break;
-                case "/Mercado":
+                case "/Oferta":
                     linkColor[2].classList.add('active')
                     break;
                 case "/Tracking":
