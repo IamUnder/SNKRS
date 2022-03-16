@@ -1,6 +1,7 @@
 // Declaracion de modulos
 const router = require('express').Router()
 const puppeteer = require('puppeteer')
+const authRoutes = require('./validate-token')
 const Release = require('../models/release')
 const Oferta = require('../models/oferta')
 
@@ -112,6 +113,35 @@ router.get('/outlet', async (req, res) => {
         error: null,
         nike: ofertaNike,
         adidas: ofertaAdidas
+    })
+})
+
+// Ruta para dar like a una oferta
+router.post('/like', authRoutes, async (req, res) => {
+
+    // Recuperamos la oferta a la que quiere incluirse
+    const oferta = await Oferta.findById(req.body.id)
+    var like = oferta.like
+    var dislike = oferta.dislike
+
+    // Comprobamos que no este el like dado ya, en ese caso lo quitamos
+    if (like.includes(req.user.id)) {
+        like = removeItem(like, req.user.id)
+    } else { // Si no tiene el like dado se lo ponemos
+        like.push(req.user.id)
+    }
+
+    // Comprobamos si le habia dado dislike a la oferta, si es asi lo quitamos
+    if (dislike.includes(req.user.id)) {
+        dislike = removeItem(dislike, req.user.id)
+    }
+
+    // Guardamos el nuevo valor
+    await Oferta.findByIdAndUpdate(req.body.id,{like: like, dislike: dislike})
+
+
+    return res.json({
+        error: null
     })
 })
 
@@ -436,6 +466,18 @@ getWeek = () => {
 
     return result
 
+}
+
+// Funcion para elimiar el valor de un array
+function removeItem (array, value) {
+    
+    var i = array.indexOf( value );
+ 
+    if ( i !== -1 ) {
+        array.splice( i, 1 );
+    }
+
+    return array
 }
 
 module.exports = router

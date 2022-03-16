@@ -9,6 +9,42 @@ function getOfertas() {
     return axios.get(ENDPOINT_PATH+'s/outlet')
 }
 
+// Funcion para dar like a una oferta
+function fav (id, token) {
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'auth-token': token
+    }
+
+    const body = {
+        id: id
+    }
+
+    return axios.post(ENDPOINT_PATH+'s/like',body,{
+        headers: headers
+    })
+}
+
+// Funcion para quitar fav
+function unfav (id, token) {
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'auth-token': token
+    }
+
+    const body = {
+        id: id
+    }
+
+    return axios.post(ENDPOINT_PATH+'s/unlike',body,{
+        headers: headers
+    })
+}
+
 export default {
-    getOfertas
+    getOfertas,
+    fav,
+    unfav
 }

@@ -41,8 +41,8 @@
                                             <i @click="fav(ni._id)" class="mdi mdi-thumb-up mr-2">{{ni.like.length}}</i>
                                             <i @click="fav(ni._id)" class="mdi mdi-thumb-up-outline mr-2">{{ni.like.length}}</i>
 
-                                            <i @click="fav(ni._id)" class="mdi mdi-thumb-down">{{ni.dislike.length}}</i>
-                                            <i @click="fav(ni._id)" class="mdi mdi-thumb-down-outline">{{ni.dislike.length}}</i>
+                                            <i @click="unfav(ni._id)" class="mdi mdi-thumb-down">{{ni.dislike.length}}</i>
+                                            <i @click="unfav(ni._id)" class="mdi mdi-thumb-down-outline">{{ni.dislike.length}}</i>
                                         </td>
                                         <td class="align-middle"><font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" @click="goTo(ni.url)"/></td>
                                     </tr>
@@ -125,11 +125,14 @@ export default {
             })
         },
         fav (id) {
-            console.log(id)
-            console.log(this.token);
+            oferta.fav(id, this.token).then(() =>{
+                this.getOfertas()
+            })
         },
         unfav (id) {
-            console.log(id)
+            oferta.unfav(id, this.token).then(() =>{
+                this.getOfertas()
+            })
         }, 
         goTo (url) {
             console.log(url);
