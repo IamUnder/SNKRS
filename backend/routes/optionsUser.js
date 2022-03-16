@@ -29,6 +29,8 @@ router.post('/profile', async (req, res) => {
             email: user.email,
             descripcion: user.descripcion,
             id: user._id,
+            follow: user.follow,
+            followers: user.followers,
             token: req.header('auth-token')
         }
     })

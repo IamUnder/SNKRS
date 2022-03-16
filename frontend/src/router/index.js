@@ -5,7 +5,7 @@ import Inicio from '@/views/Inicio.vue'
 import Register from '@/views/Register.vue'
 import Perfil from '@/views/Perfil.vue'
 import PerfilUser from '@/views/PerfilInfo.vue'
-import CompraVenta from '@/views/CompraVenta.vue'
+import Oferta from '@/views/Oferta.vue'
 import Tracking from '@/views/Tracking.vue'
 import Post from '@/views/Post.vue'
 
@@ -55,10 +55,10 @@ const routes = [
     meta: { tittle: 'SNRKS: Post' }
   },
   {
-    path: '/Mercado',
-    name: 'SNRKS: Mercado',
-    component: CompraVenta,
-    meta: { title: 'SNRKS: Mercado'}
+    path: '/Oferta',
+    name: 'SNRKS: Oferta',
+    component: Oferta,
+    meta: { title: 'SNRKS: Oferta'}
   },
   {
     path: '/Tracking',
