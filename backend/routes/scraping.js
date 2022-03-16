@@ -46,6 +46,17 @@ router.get('/release', async (req, res) => {
 
 })
 
+// Ruta para obtener las ofertas semanales
+router.get('/outlet', async (req, res) => {
+
+    //console.table(await getOutletNike());
+    console.log(await getOutletAdidas());
+
+    return res.json({
+        error: null
+    })
+})
+
 // Funcion para hacer auto scroll
 async function autoScroll(page){
     await page.evaluate(async () => {
@@ -66,7 +77,7 @@ async function autoScroll(page){
     });
 }
 
-// Funcion que devuelve los valores de nike
+// Funcion que devuelve los lanzamientos de nike
 async function getNike() {
 
     const url = process.env.RELEASENIKE 
@@ -138,7 +149,76 @@ async function getNike() {
 
 }
 
-// Funcion que devuelve los valores de adidas
+//Funcion que devuelve las ofertas de nike
+async function getOutletNike() {
+
+    const url = process.env.OUTLETNIKE 
+
+    try {
+        
+        // Abrimos una instacia del navegador y navegamos hasta la url
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox','--disable-setuid-sandbox']
+        })
+        const page = await browser.newPage()
+        await page.goto(url)
+        await page.setViewport({
+            width: 3840,
+            height: 2160
+        });
+        await autoScroll(page);
+
+        // Javascript que se ejecuta en el navegador que crea puppeteer
+        var releases = await page.evaluate(() => {
+
+            // Declaramos el valor que devolveremos
+            var value = []
+            // Declaramos las variables a usar 
+            var vModelo = []
+            var vTipo = []
+            var vPrecio = []
+            var vPrecioDescuento = []
+            var vImg = []
+            var vUrl = []
+
+            // rellenamos las varibales 
+            document.querySelectorAll('.product-card:nth-child(-n+8) .product-card__title').forEach(element => vModelo.push(element.innerHTML))
+            document.querySelectorAll('.product-card:nth-child(-n+8) .product-card__subtitle').forEach(element => vTipo.push(element.innerHTML))
+            document.querySelectorAll('.product-card:nth-child(-n+8) .is--striked-out').forEach(element => vPrecio.push(element.innerHTML.replace('&nbsp;','')))
+            document.querySelectorAll('.product-card:nth-child(-n+8) .is--current-price').forEach(element => vPrecioDescuento.push(element.innerHTML.replace('&nbsp;','')))
+            document.querySelectorAll('.product-card:nth-child(-n+8) img').forEach(element => vImg.push(element.src))
+            document.querySelectorAll('.product-card:nth-child(-n+8) a.product-card__link-overlay').forEach(element => vUrl.push(element.href))
+
+            // Creamos los objetos
+            for (let i = 0; i < vModelo.length; i++) {
+
+                value.push({
+                    modelo: vModelo[i],
+                    tipo: vTipo[i],
+                    precio: vPrecio[i],
+                    precioDescuento: vPrecioDescuento[i],
+                    img: vImg[i],
+                    url: vUrl[i]
+                })
+            }
+
+            return value
+        })
+
+        await browser.close()
+
+    } catch (error) {
+        
+        console.log(error);
+
+    }
+
+    return releases
+
+}
+
+// Funcion que devuelve los lanzamientos de adidas
 async function getAdidas() {
 
     const url = process.env.RELEASEADIDAS
@@ -211,6 +291,76 @@ async function getAdidas() {
     }
 
     return releases
+
+}
+
+// Funcion que devuelve las ofertas de adidas
+async function getOutletAdidas() {
+
+    const url = process.env.OUTLETADIDAS
+
+    try {
+        
+        // Abrimos una instacia del navegador y navegamos hasta la url
+        const browser = await puppeteer.launch({
+            headless: false,
+            args: ['--no-sandbox','--disable-setuid-sandbox']
+        })
+        const page = await browser.newPage()
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36');
+        await page.goto(url)
+        await page.setViewport({
+            width: 3840,
+            height: 2160
+        });
+        await autoScroll(page);
+
+        // Javascript que se ejecuta en el navegador que crea puppeteer
+        // var releases = await page.evaluate(() => {
+
+        //     // Declaramos el valor que devolveremos
+        //     var value = []
+        //     // Declaramos las variables a usar 
+        //     var vModelo = []
+        //     var vTipo = []
+        //     var vPrecio = []
+        //     var vPrecioDescuento = []
+        //     var vImg = []
+        //     var vUrl = []
+
+        //     // rellenamos las varibales 
+        //     document.querySelectorAll('.product-card:nth-child(-n+8) .product-card__title').forEach(element => vModelo.push(element.innerHTML))
+        //     document.querySelectorAll('.product-card:nth-child(-n+8) .product-card__subtitle').forEach(element => vTipo.push(element.innerHTML))
+        //     document.querySelectorAll('.product-card:nth-child(-n+8) .is--striked-out').forEach(element => vPrecio.push(element.innerHTML.replace('&nbsp;','')))
+        //     document.querySelectorAll('.product-card:nth-child(-n+8) .is--current-price').forEach(element => vPrecioDescuento.push(element.innerHTML.replace('&nbsp;','')))
+        //     document.querySelectorAll('.product-card:nth-child(-n+8) img').forEach(element => vImg.push(element.src))
+        //     document.querySelectorAll('.product-card:nth-child(-n+8) a.product-card__link-overlay').forEach(element => vUrl.push(element.href))
+
+        //     // Creamos los objetos
+        //     for (let i = 0; i < vModelo.length; i++) {
+
+        //         value.push({
+        //             modelo: vModelo[i],
+        //             tipo: vTipo[i],
+        //             precio: vPrecio[i],
+        //             precioDescuento: vPrecioDescuento[i],
+        //             img: vImg[i],
+        //             url: vUrl[i]
+        //         })
+        //     }
+
+        //     return value
+        // })
+
+        //await browser.close()
+
+    } catch (error) {
+        
+        console.log(error);
+
+    }
+
+    return true
 
 }
 
