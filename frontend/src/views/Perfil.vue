@@ -26,11 +26,12 @@
 							</div>
 							<div class="d-flex align-items-start">
                                 <!-- Imagen de perfil, si no tiene muestra esa WIP -->
-								<img 
+                                <img
 									src="https://bootdey.com/img/Content/avatar/avatar1.png"
 									class="rounded-circle avatar-lg img-thumbnail"
 									alt="profile-image"
 									/>
+								
 								<div class="w-100 ms-3">
                                     <!-- Nombre -->
                                     <div>
@@ -41,15 +42,17 @@
                                         <p class="text-muted" v-if="!estado">@{{user.user}}</p>
                                         <input type="text" class="form-control col-4" v-bind="user" placeholder="Nuevo usuario" v-if="estado">
                                     </div>
-									<!-- <button
-										type="button"
-										class="btn btn-custom btn-xs waves-effect mb-2 waves-light"
-                                        @click="edit"
-										>
-									Follow
-									</button> -->
 								</div>
 							</div>
+                            <div v-if="estado">
+                                <form enctype="multipart/form-data">
+                                    <input id="uploadFile" placeholder="File Name here" disabled="disabled" />
+                                    <div class="fileUpload btn btn-custom">
+                                        <span>Subir imagen</span>
+                                        <input id="uploadBtn" type="file" accept="image/*" class="upload" @change="handleFileUpload( $event )"/>
+                                    </div>
+                                </form>
+                            </div>
 							<div class="mt-3">
                                 <div v-if="!estado">
                                     <h4 class="font-13 text-uppercase">Descripcion :</h4>
@@ -179,65 +182,6 @@
 										</div>
 									</div>
 								</div>
-                                <!-- Respuesta -->
-								<!-- <div class="post-user-comment-box"> -->
-									<!-- <div class="d-flex align-items-start">
-										<img
-											class="me-2 avatar-sm rounded-circle"
-											src="https://bootdey.com/img/Content/avatar/avatar3.png"
-											alt="Generic placeholder image"
-											/>
-										<div class="w-100">
-											<h5 class="mt-0">
-												Jeremy Tomlinson
-												<small class="text-muted">3 hours ago</small>
-											</h5>
-											Nice work, makes me think of The Money Pit.
-											<br />
-											<a
-												href="javascript: void(0);"
-												class="text-muted font-13 d-inline-block mt-2"
-												><i class="mdi mdi-reply"></i> Reply</a
-												>
-											<div class="d-flex align-items-start mt-3">
-												<a class="pe-2" href="#">
-												<img
-													src="https://bootdey.com/img/Content/avatar/avatar4.png"
-													class="avatar-sm rounded-circle"
-													alt="Generic placeholder image"
-													/>
-												</a>
-												<div class="w-100">
-													<h5 class="mt-0">
-														Kathleen Thomas
-														<small class="text-muted">5 hours ago</small>
-													</h5>
-													i'm in the middle of a timelapse animation myself!
-													(Very different though.) Awesome stuff.
-												</div>
-											</div>
-										</div>
-									</div> -->
-                                    <!-- Respuesta de respuesta, sin cuenta no deberia de salir --> 
-									<!-- <div class="d-flex align-items-start mt-2">
-										<a class="pe-2" href="#">
-										<img
-											src="https://bootdey.com/img/Content/avatar/avatar1.png"
-											class="rounded-circle"
-											alt="Generic placeholder image"
-											height="31"
-											/>
-										</a>
-										<div class="w-100">
-											<input
-												type="text"
-												id="simpleinput"
-												class="form-control border-0 form-control-sm"
-												placeholder="Add comment"
-												/>
-										</div>
-									</div> -->
-								<!-- </div> -->
 							</div>
 						</div>
 					</div>
@@ -272,29 +216,40 @@
             userName: "",
             name: "",
             posts: [],
-            post: ""
+            post: "",
+            file: ''
         }),
         methods: {
+            handleFileUpload( event ){
+                this.file = event.target.files[0]
+                document.getElementById("uploadFile").value = this.file.name
+            },
             edit (confirm) {
 
                 this.estado = !this.estado
-                console.log(this.estado);
                 
                 if (confirm) {
 
-                    var options = {
-                        descripcion: this.descripcion,
-                        user: this.userName,
-                        name: this.name
-                    }
+                    var formData = new FormData()
+                    formData.append('descripcion', this.descripcion)
+                    formData.append('user', this.userName)
+                    formData.append('name', this.name)
+                    formData.append('file', this.file)
 
-                    profile.updateProfile(options, this.user.token).then(()=>{
-                        this.user = auth.getUser()
+                    // var options = {
+                    //     descripcion: this.descripcion,
+                    //     user: this.userName,
+                    //     name: this.name
+                    // }
 
-                        this.descripcion = this.user.descripcion || ""
-                        this.userName = this.user.user
-                        this.name = this.user.name
-                        console.log(this.user);
+                    profile.updateProfile(formData, this.user.token).then( response =>{
+                        // this.user = auth.getUser()
+
+                        // this.descripcion = this.user.descripcion || ""
+                        // this.userName = this.user.user
+                        // this.name = this.user.name
+                        this.file = ''
+                        console.log('test' + response.data);
                     }).catch((error) => {
                         console.log(error.response)
                     })
@@ -511,4 +466,23 @@
     a {
         text-decoration: none;
     }
+
+    .fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+    }
+
+    .fileUpload input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+
 </style>
