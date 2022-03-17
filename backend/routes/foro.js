@@ -105,6 +105,7 @@ router.post('/reply', authRoutes, upload.any('files'), async (req, res) => {
 
     const user = await User.findById(req.user.id)
     const parent = await Post.findById(req.body.parentId)
+    console.log(user.img);
     var reply = parent.reply
     
     const post = new Post({
@@ -112,7 +113,7 @@ router.post('/reply', authRoutes, upload.any('files'), async (req, res) => {
         body: req.body.post,
         nameUser: user.name,
         user: user.user,
-        userImg: user.img,
+        imgUser: user.img,
         parent: req.body.parentId,
         files: files
     })

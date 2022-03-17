@@ -53,6 +53,13 @@
                                     </div>
                                 </div>
                             </div> 
+                            <div class="container-fluid" v-if="parent.files.length != 0">
+                                <div class="row">
+                                    <div class="col" v-for="file in parent.files" :key="file.key">
+                                        <img :src="file" alt="..." class="img-thumbnail">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- End parent -->
 
@@ -98,6 +105,13 @@
                                 </div>
                             </div>
                         </div> 
+                        <div class="container-fluid" v-if="post.files.length != 0">
+                            <div class="row">
+                                <div class="col" v-for="file in post.files" :key="file.key">
+                                    <img :src="file" alt="..." class="img-thumbnail">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Respuestas -->
@@ -146,7 +160,14 @@
                                     <small v-if="re.reply" @click="goToPost(re._id)" class="pl-2"> Respuestas ( {{ re.reply.length }} )</small>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
+                        <div class="container-fluid" v-if="re.files.length != 0">
+                            <div class="row">
+                                <div class="col" v-for="file in re.files" :key="file.key">
+                                    <img :src="file" alt="..." class="img-thumbnail">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

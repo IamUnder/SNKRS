@@ -78,26 +78,6 @@
 							</div>
 						</div>
 					</div>
-					<div class="card">
-						<div class="card-body">
-							<h4 class="header-title mb-3 text-center">
-								Coleccion <font-awesome-icon icon="fa-solid fa-circle-plus" />
-							</h4>
-							<div class="list-group">
-								<a href="javascript:void(0)" class="list-group-item list-group-item-action">
-									<div class="d-flex align-items-center pb-1" id="tooltips-container">
-										<div class="w-100 ms-2">
-											<h5 class="mb-1">
-												Modelo
-											</h5>
-											<p class="mb-0 font-13 text-muted">Marca</p>
-										</div>
-                                        <p>precio</p>
-									</div>
-								</a>
-							</div>
-						</div>
-					</div>
 				</div>
 				<!-- end col-->
 				<div class="col-xl-7">
@@ -143,6 +123,13 @@
                                             Favorito ({{ post.fav.length }})
 											</a>
 											<small @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
+										</div>
+									</div>
+								</div>
+								<div class="container-fluid" v-if="post.files.length != 0">
+									<div class="row">
+										<div class="col" v-for="file in post.files" :key="file.key">
+											<img :src="file" alt="..." class="img-thumbnail">
 										</div>
 									</div>
 								</div>

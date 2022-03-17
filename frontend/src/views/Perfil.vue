@@ -181,6 +181,13 @@
 										</div>
 									</div>
 								</div>
+                                <div class="container-fluid" v-if="post.files.length != 0">
+                                        <div class="row">
+                                            <div class="col" v-for="file in post.files" :key="file.key">
+                                                <img :src="file" alt="..." class="img-thumbnail">
+                                            </div>
+                                        </div>
+                                    </div>
 							</div>
 						</div>
 					</div>
