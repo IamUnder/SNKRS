@@ -37,6 +37,10 @@ const postSchema = mongoose.Schema({
     fav: {
         type: Array,
         default: []
+    },
+    files: {
+        type: Array,
+        default: []
     }
 },{
     versionKey: false

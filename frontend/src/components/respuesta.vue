@@ -16,6 +16,11 @@
                                 ></textarea>
                             </span>
                             <div class="comment-area-btn">
+                                <input id="uploadFiless" placeholder="Imagenes a subir" disabled="disabled" />
+                                <div class="fileUpload btn btn-custom">
+                                    <span>Añadir imagen</span>
+                                    <input id="uploadBtn" type="file" accept="image/*" class="upload" multiple @change="onChange"/>
+                                </div>
                                 <div class="float-end">
                                     <button
                                         type="submit"
@@ -57,8 +62,19 @@ export default {
         id: '',
         post: '',
         token: '',
+        fileArray: null
     }),
     methods: {
+        onChange (event) {
+            console.log('test');
+            this.fileArray = event.target.files
+            let text = ''
+            for (const i of Object.keys(this.fileArray)) {
+                //formData.append('fileArray', this.fileArray[i])
+                text += this.fileArray[i].name + ' ,'
+            }
+            document.getElementById("uploadFiless").value = text
+        },
         cerrar () {
             this.post = ''
             this.$emit('cerrar')
@@ -67,11 +83,27 @@ export default {
             this.id = id
         },
         sendPost () {
-            Foro.reply(this.post, this.id, this.token).then(() => {
-                this.cerrar()
-            }).catch(() => {
-                this.cerrar()
-            })
+
+            if (this.post != "") {
+                
+                const formData = new FormData()
+                if (this.fileArray) {
+                    for (const i of Object.keys(this.fileArray)) {
+                        formData.append('fileArray', this.fileArray[i])
+                    }
+                }
+                
+                formData.append('parentId', this.id)
+                formData.append('post', this.post)
+                
+                console.log(formData);
+
+                Foro.reply(formData, this.token).then( () => {
+                    this.cerrar()
+                    this.post = ''
+                })
+            }
+
         }
     },
     mounted() {
@@ -122,5 +154,23 @@ export default {
     .btn-custom2 {
         background: #D62828;
         color: #003049;
+    }
+
+    .fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+    }
+
+    .fileUpload input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
     }
 </style>

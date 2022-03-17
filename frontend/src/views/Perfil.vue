@@ -55,7 +55,7 @@
                                 <form enctype="multipart/form-data">
                                     <input id="uploadFile" placeholder="File Name here" disabled="disabled" />
                                     <div class="fileUpload btn btn-custom">
-                                        <span>Subir imagen</span>
+                                        <span>Seleccionar imagen</span>
                                         <input id="uploadBtn" type="file" accept="image/*" class="upload" @change="handleFileUpload( $event )"/>
                                     </div>
                                 </form>
@@ -101,26 +101,6 @@
 							</div>
 						</div>
 					</div>
-					<div class="card">
-						<div class="card-body">
-							<h4 class="header-title mb-3 text-center">
-								Coleccion <font-awesome-icon icon="fa-solid fa-circle-plus"/> <!-- WIP -->
-							</h4>
-							<div class="list-group">
-								<a href="javascript:void(0)" class="list-group-item list-group-item-action">
-									<div class="d-flex align-items-center pb-1" id="tooltips-container">
-										<div class="w-100 ms-2">
-											<h5 class="mb-1">
-												Modelo
-											</h5>
-											<p class="mb-0 font-13 text-muted">Marca</p>
-										</div>
-                                        <p>precio</p>
-									</div>
-								</a>
-							</div>
-						</div>
-					</div>
 				</div>
 				<!-- end col-->
 				<div class="col-xl-7">
@@ -138,6 +118,11 @@
 									></textarea>
 								</span>
 								<div class="comment-area-btn">
+                                    <input id="uploadFiles" placeholder="Imagenes a subir" disabled="disabled" />
+                                    <div class="fileUpload btn btn-custom">
+                                        <span>Añadir imagen</span>
+                                        <input id="uploadBtn" type="file" accept="image/*" class="upload" multiple @change="onChange"/>
+                                    </div>
 									<div class="float-end">
 										<button
 											type="submit"
@@ -231,12 +216,23 @@
             name: "",
             posts: [],
             post: "",
-            file: ''
+            file: '',
+            fileArray: null
         }),
         methods: {
             handleFileUpload( event ){
                 this.file = event.target.files[0]
                 document.getElementById("uploadFile").value = this.file.name
+            },
+            onChange (event) {
+                console.log('test');
+                this.fileArray = event.target.files
+                let text = ''
+                for (const i of Object.keys(this.fileArray)) {
+                    //formData.append('fileArray', this.fileArray[i])
+                    text += this.fileArray[i].name + ' ,'
+                }
+                document.getElementById("uploadFiles").value = text
             },
             edit (confirm) {
 
@@ -298,14 +294,22 @@
             },
             sendPost () {
                 if (this.post != "") {
-                    console.log('si?');
-                    const post = {
-                        post: this.post
+                    
+                    const formData = new FormData()
+                    if (this.fileArray) {
+                        for (const i of Object.keys(this.fileArray)) {
+                            formData.append('fileArray', this.fileArray[i])
+                        }
                     }
-                    foro.createPost(post, this.user.token).then(() => {
+                    
+                    formData.append('post', this.post)
+                    
+                    console.log(formData);
+
+                    foro.createPost(formData, this.user.token).then( () => {
                         this.getPost()
+                        this.post = ''
                     })
-                    this.post = ""
                 }
             },
             getPost () {
