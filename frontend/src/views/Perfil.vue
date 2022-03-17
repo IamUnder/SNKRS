@@ -25,11 +25,18 @@
 								</div>
 							</div>
 							<div class="d-flex align-items-start">
-                                <!-- Imagen de perfil, si no tiene muestra esa WIP -->
+                                
+                                <img
+									:src="user.img"
+									class="rounded-circle avatar-lg img-thumbnail"
+									alt="profile-image"
+                                    v-if="user.img"
+									/>
                                 <img
 									src="https://bootdey.com/img/Content/avatar/avatar1.png"
 									class="rounded-circle avatar-lg img-thumbnail"
 									alt="profile-image"
+                                    v-else
 									/>
 								
 								<div class="w-100 ms-3">
@@ -242,14 +249,13 @@
                     //     name: this.name
                     // }
 
-                    profile.updateProfile(formData, this.user.token).then( response =>{
-                        // this.user = auth.getUser()
+                    profile.updateProfile(formData, this.user.token).then(() =>{
+                        this.user = auth.getUser()
 
-                        // this.descripcion = this.user.descripcion || ""
-                        // this.userName = this.user.user
-                        // this.name = this.user.name
+                        this.descripcion = this.user.descripcion || ""
+                        this.userName = this.user.user
+                        this.name = this.user.name
                         this.file = ''
-                        console.log('test' + response.data);
                     }).catch((error) => {
                         console.log(error.response)
                     })
