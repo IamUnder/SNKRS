@@ -9,15 +9,20 @@
                 <!-- POST PRINCIPAL -->
                 <div class="row mb-3">
                     <div class="border p-2 mb-3 ml-3" v-if="post">
-                        
                         <!-- Parent -->
                         <div class="border p-2 mb-3 ml-3" v-if="parent.length != 0">
                             <div class="d-flex align-items-start">
-                                <!-- Imagen de perfil WIP -->
+                                <img
+                                    class="me-2 avatar-sm rounded-circle"
+                                    :src="parent.imgUser"
+                                    alt="imagen de perfil"
+                                    v-if="parent.imgUser"
+                                    />
                                 <img
                                     class="me-2 avatar-sm rounded-circle"
                                     src="https://bootdey.com/img/Content/avatar/avatar4.png"
                                     alt="imagen de perfil"
+                                    v-else
                                     />
                                 <div class="w-100">
                                     <h5 class="">
@@ -48,16 +53,29 @@
                                     </div>
                                 </div>
                             </div> 
+                            <div class="container-fluid" v-if="parent.files.length != 0">
+                                <div class="row">
+                                    <div class="col" v-for="file in parent.files" :key="file.key">
+                                        <img :src="file" alt="..." class="img-thumbnail">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- End parent -->
 
                         <div class="d-flex align-items-start">
-                            <!-- Imagen de perfil WIP -->
+                            <img
+                                class="me-2 avatar-sm rounded-circle"
+                                :src="post.imgUser"
+                                alt="imagen de perfil"
+                                v-if="post.imgUser"
+                                />
                             <img
                                 class="me-2 avatar-sm rounded-circle"
                                 src="https://bootdey.com/img/Content/avatar/avatar4.png"
                                 alt="imagen de perfil"
-                                />
+                                v-else
+                            />
                             <div class="w-100">
                                 <h5 class="">
                                     <small @click="goTo(post.user)">{{ post.nameUser }} </small>
@@ -87,6 +105,13 @@
                                 </div>
                             </div>
                         </div> 
+                        <div class="container-fluid" v-if="post.files.length != 0">
+                            <div class="row">
+                                <div class="col" v-for="file in post.files" :key="file.key">
+                                    <img :src="file" alt="..." class="img-thumbnail">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Respuestas -->
@@ -97,8 +122,15 @@
                             <!-- Imagen de perfil WIP -->
                             <img
                                 class="me-2 avatar-sm rounded-circle"
+                                :src="re.imgUser"
+                                alt="imagen de perfil"
+                                v-if="re.imgUser"
+                                />
+                            <img
+                                class="me-2 avatar-sm rounded-circle"
                                 src="https://bootdey.com/img/Content/avatar/avatar4.png"
                                 alt="imagen de perfil"
+                                v-else
                                 />
                             <div class="w-100">
                                 <h5 class="">
@@ -128,7 +160,14 @@
                                     <small v-if="re.reply" @click="goToPost(re._id)" class="pl-2"> Respuestas ( {{ re.reply.length }} )</small>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
+                        <div class="container-fluid" v-if="re.files.length != 0">
+                            <div class="row">
+                                <div class="col" v-for="file in re.files" :key="file.key">
+                                    <img :src="file" alt="..." class="img-thumbnail">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

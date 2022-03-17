@@ -11,7 +11,7 @@ function setUser (user) {
 function updateProfile (options, token) {
 
     const headers = {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         'auth-token': token
     }
 

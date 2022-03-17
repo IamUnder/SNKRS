@@ -10,11 +10,17 @@
 					<div class="card">
 						<div class="card-body">
 							<div class="d-flex align-items-start">
-                                <!-- Imagen de perfil, si no tiene muestra esa WIP -->
+								<img 
+									:src="user.img"
+									class="rounded-circle avatar-lg img-thumbnail"
+									alt="profile-image"
+									v-if="user.img"
+									/>
 								<img 
 									src="https://bootdey.com/img/Content/avatar/avatar1.png"
 									class="rounded-circle avatar-lg img-thumbnail"
 									alt="profile-image"
+									v-else
 									/>
 								<div class="w-100 ms-3">
 									<h4 class="my-0">{{user.name}}</h4>
@@ -72,26 +78,6 @@
 							</div>
 						</div>
 					</div>
-					<div class="card">
-						<div class="card-body">
-							<h4 class="header-title mb-3 text-center">
-								Coleccion <font-awesome-icon icon="fa-solid fa-circle-plus" />
-							</h4>
-							<div class="list-group">
-								<a href="javascript:void(0)" class="list-group-item list-group-item-action">
-									<div class="d-flex align-items-center pb-1" id="tooltips-container">
-										<div class="w-100 ms-2">
-											<h5 class="mb-1">
-												Modelo
-											</h5>
-											<p class="mb-0 font-13 text-muted">Marca</p>
-										</div>
-                                        <p>precio</p>
-									</div>
-								</a>
-							</div>
-						</div>
-					</div>
 				</div>
 				<!-- end col-->
 				<div class="col-xl-7">
@@ -103,8 +89,15 @@
 								<div class="d-flex align-items-start">
 									<img
 										class="me-2 avatar-sm rounded-circle"
+										:src="user.img"
+										alt="Generic placeholder image"
+										v-if="user.img"
+										/>
+									<img
+										class="me-2 avatar-sm rounded-circle"
 										src="https://bootdey.com/img/Content/avatar/avatar4.png"
 										alt="Generic placeholder image"
+										v-else
 										/>
 									<div class="w-100">
 										<h5 class="">
@@ -133,65 +126,13 @@
 										</div>
 									</div>
 								</div>
-                                <!-- Respuesta -->
-								<!-- <div class="post-user-comment-box"> -->
-									<!-- <div class="d-flex align-items-start">
-										<img
-											class="me-2 avatar-sm rounded-circle"
-											src="https://bootdey.com/img/Content/avatar/avatar3.png"
-											alt="Generic placeholder image"
-											/>
-										<div class="w-100">
-											<h5 class="mt-0">
-												Jeremy Tomlinson
-												<small class="text-muted">3 hours ago</small>
-											</h5>
-											Nice work, makes me think of The Money Pit.
-											<br />
-											<a
-												href="javascript: void(0);"
-												class="text-muted font-13 d-inline-block mt-2"
-												><i class="mdi mdi-reply"></i> Reply</a
-												>
-											<div class="d-flex align-items-start mt-3">
-												<a class="pe-2" href="#">
-												<img
-													src="https://bootdey.com/img/Content/avatar/avatar4.png"
-													class="avatar-sm rounded-circle"
-													alt="Generic placeholder image"
-													/>
-												</a>
-												<div class="w-100">
-													<h5 class="mt-0">
-														Kathleen Thomas
-														<small class="text-muted">5 hours ago</small>
-													</h5>
-													i'm in the middle of a timelapse animation myself!
-													(Very different though.) Awesome stuff.
-												</div>
-											</div>
+								<div class="container-fluid" v-if="post.files.length != 0">
+									<div class="row">
+										<div class="col" v-for="file in post.files" :key="file.key">
+											<img :src="file" alt="..." class="img-thumbnail">
 										</div>
-									</div> -->
-                                    <!-- Respuesta de respuesta, sin cuenta no deberia de salir --> 
-									<!-- <div class="d-flex align-items-start mt-2">
-										<a class="pe-2" href="#">
-										<img
-											src="https://bootdey.com/img/Content/avatar/avatar1.png"
-											class="rounded-circle"
-											alt="Generic placeholder image"
-											height="31"
-											/>
-										</a>
-										<div class="w-100">
-											<input
-												type="text"
-												id="simpleinput"
-												class="form-control border-0 form-control-sm"
-												placeholder="Add comment"
-												/>
-										</div>
-									</div> -->
-								<!-- </div> -->
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

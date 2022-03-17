@@ -18,7 +18,13 @@
                             required
                             ></textarea>
                         </span>
+                                
                         <div class="comment-area-btn">
+                            <input id="uploadFile" placeholder="Imagenes a subir" disabled="disabled" />
+                            <div class="fileUpload btn btn-custom">
+                                <span>Añadir imagen</span>
+                                <input id="uploadBtn" type="file" accept="image/*" class="upload" multiple @change="onChange"/>
+                            </div>
                             <div class="float-end">
                                 <button
                                     type="submit"
@@ -36,15 +42,22 @@
                 </div>
                 <hr>
                 <div class="row mt-8 mr-2">
-                    <template v-if="post.length === 0">
+                    <template v-if="posts.length != 0">
                         <div class="border p-2 mb-3 ml-3" v-for="post in posts" :key="post._id">
                             <div class="d-flex align-items-start">
                                 <!-- Imagen de perfil WIP -->
                                 <img
-                                    class="me-2 avatar-sm rounded-circle"
-                                    src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                                    alt="imagen de perfil"
-                                    />
+                                class="me-2 avatar-sm rounded-circle"
+                                :src="post.imgUser"
+                                alt="imagen de perfil"
+                                v-if="post.imgUser"
+                                />
+                                <img
+                                class="me-2 avatar-sm rounded-circle"
+                                src="https://bootdey.com/img/Content/avatar/avatar4.png"
+                                alt="imagen de perfil"
+                                v-else
+                                />
                                 <div class="w-100">
                                     <h5 class="">
                                         <small @click="goTo(post.user)">{{ post.nameUser }} </small>
@@ -70,6 +83,13 @@
                                             Favorito ({{ post.fav.length }})
                                         </a>
                                         <small @click="goToPost(post._id)" class="pl-2"> Respuestas ( {{ post.reply.length }} )</small>
+                                    </div>
+                                    <div class="container-fluid" v-if="post.files.length != 0">
+                                        <div class="row">
+                                            <div class="col" v-for="file in post.files" :key="file.key">
+                                                <img :src="file" alt="..." class="img-thumbnail">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -102,20 +122,41 @@ export default {
     data: () => ({
         user: {},
         post: "",
-        posts: []
+        posts: [],
+        fileArray: null
     }),
     mounted() {
         this.user = auth.getUser()
         this.getAllPost()
     },
     methods: {
+        onChange (event) {
+            console.log('test');
+            this.fileArray = event.target.files
+            let text = ''
+            for (const i of Object.keys(this.fileArray)) {
+                //formData.append('fileArray', this.fileArray[i])
+                text += this.fileArray[i].name + ' ,'
+            }
+            document.getElementById("uploadFile").value = text
+        },
         sendPost () {
             if (this.post != "") {
-                const post = {
-                    post: this.post
+                
+                const formData = new FormData()
+                if (this.fileArray) {
+                    for (const i of Object.keys(this.fileArray)) {
+                        formData.append('fileArray', this.fileArray[i])
+                    }
                 }
-                foro.createPost(post, this.user.token).then(() => {
+                
+                formData.append('post', this.post)
+                
+                console.log(formData);
+
+                foro.createPost(formData, this.user.token).then( () => {
                     this.getAllPost()
+                    this.post = ''
                 })
             }
         },
@@ -231,5 +272,23 @@ export default {
 
     a {
         text-decoration: none;
+    }
+
+    .fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 1px;
+    }
+
+    .fileUpload input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
     }
 </style>

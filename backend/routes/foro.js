@@ -3,9 +3,45 @@ const router = require('express').Router()
 const authRoutes = require('./validate-token')
 const Post = require('../models/post')
 const User = require('../models/users')
+const multer  = require('multer')
+const upload = multer()
+const firebase = require('../config/firebase')
+const { v4 } = require('uuid');
 
 // Ruta de creacion de post, middleware necesario
-router.post('/create', authRoutes, async (req, res) => {
+router.post('/create', authRoutes, upload.any('files'), async (req, res) => {
+
+    var files = []
+
+    if (req.files.length != 0) {
+        req.files.forEach(element => { // Por cada archivo subimos el fichero
+            
+            let token = v4();
+            // Grab the file
+            let file = element;
+            // Format the filename
+            let timestamp = Date.now();
+            let name = file.originalname.split(".")[0];
+            let type = file.originalname.split(".")[1];
+            let fileName = `${name}_${timestamp}.${type}`;
+            let blob = firebase.bucket.file(fileName)
+            
+            let blobWriter = blob.createWriteStream({
+                metadata: {
+                    contentType: element.mimetype,
+                    metadata: {
+                        firebaseStorageDownloadTokens: token,
+                    }
+                }
+            })
+
+            blobWriter.end(element.buffer)
+            
+            let url = 'https://firebasestorage.googleapis.com/v0/b/snkrs-c87de.appspot.com/o/' + fileName + "?alt=media&token=" + token
+
+            files.push(url)
+        });
+    } 
 
     const user = await User.findById(req.user.id)
     
@@ -13,7 +49,9 @@ router.post('/create', authRoutes, async (req, res) => {
         idUser: req.user.id,
         body: req.body.post,
         nameUser: user.name,
-        user: user.user
+        user: user.user,
+        imgUser: user.img,
+        files: files
     })
     
     try {
@@ -31,9 +69,43 @@ router.post('/create', authRoutes, async (req, res) => {
 })
 
 // Ruta de creacion de respuesta a post
-router.post('/reply', authRoutes, async (req, res) => {
+router.post('/reply', authRoutes, upload.any('files'), async (req, res) => {
+
+    var files = []
+
+    if (req.files.length != 0) {
+        req.files.forEach(element => { // Por cada archivo subimos el fichero
+            
+            let token = v4();
+            // Grab the file
+            let file = element;
+            // Format the filename
+            let timestamp = Date.now();
+            let name = file.originalname.split(".")[0];
+            let type = file.originalname.split(".")[1];
+            let fileName = `${name}_${timestamp}.${type}`;
+            let blob = firebase.bucket.file(fileName)
+            
+            let blobWriter = blob.createWriteStream({
+                metadata: {
+                    contentType: element.mimetype,
+                    metadata: {
+                        firebaseStorageDownloadTokens: token,
+                    }
+                }
+            })
+
+            blobWriter.end(element.buffer)
+            
+            let url = 'https://firebasestorage.googleapis.com/v0/b/snkrs-c87de.appspot.com/o/' + fileName + "?alt=media&token=" + token
+
+            files.push(url)
+        });
+    } 
+
     const user = await User.findById(req.user.id)
     const parent = await Post.findById(req.body.parentId)
+    console.log(user.img);
     var reply = parent.reply
     
     const post = new Post({
@@ -41,7 +113,9 @@ router.post('/reply', authRoutes, async (req, res) => {
         body: req.body.post,
         nameUser: user.name,
         user: user.user,
-        parent: req.body.parentId
+        imgUser: user.img,
+        parent: req.body.parentId,
+        files: files
     })
 
     reply.push(post._id)

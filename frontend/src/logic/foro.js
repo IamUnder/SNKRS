@@ -16,15 +16,11 @@ function createPost (post, token) {
 }
 
 // Funcion para crear la respuesta
-function reply (post, parentId, token) {
+function reply (body, token) {
 
     const headers = {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         'auth-token': token
-    }
-    const body = {
-        parentId: parentId,
-        post: post
     }
 
     return axios.post(ENDPOINT_PATH+'f/reply',body,{

@@ -1,5 +1,5 @@
 .Ds_STORE
-backend/config
+backend/config/firebase.js
 
 backend/node_modules/
 backend/.env

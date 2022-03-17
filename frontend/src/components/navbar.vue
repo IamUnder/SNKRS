@@ -8,7 +8,8 @@
                 </div>
 
                 <div class="header__img">
-                    <img src="@/assets/logo.jpg" alt="">
+                    <img :src="img" alt="" v-if="img">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="" v-else>
                 </div>
             </header>
 
@@ -60,6 +61,9 @@
 
 
     export default {
+        data: () => ({
+            img: ''
+        }),
         mounted() {
             // Funcion para mostrar/ocultar el sidebar
             const toggle = document.getElementById("header-toggle")
@@ -104,6 +108,9 @@
                 auth.logOut()
                 this.$router.push('/login')
             })
+
+            // img
+            this.img = auth.getUser().img
         },
     }
 
