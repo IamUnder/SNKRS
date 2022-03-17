@@ -13,7 +13,8 @@ router.post('/create', authRoutes, async (req, res) => {
         idUser: req.user.id,
         body: req.body.post,
         nameUser: user.name,
-        user: user.user
+        user: user.user,
+        imgUser: user.img
     })
     
     try {
@@ -41,6 +42,7 @@ router.post('/reply', authRoutes, async (req, res) => {
         body: req.body.post,
         nameUser: user.name,
         user: user.user,
+        userImg: user.img,
         parent: req.body.parentId
     })
 

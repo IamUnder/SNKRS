@@ -44,9 +44,6 @@ router.post('/profile', upload.single('file'), async (req, res) => {
         
         url = 'https://firebasestorage.googleapis.com/v0/b/snkrs-c87de.appspot.com/o/' + fileName + "?alt=media&token=" + token
 
-        console.log(url);
-
-
         }
 
     var user = await User.findByIdAndUpdate({_id: req.user.id},{

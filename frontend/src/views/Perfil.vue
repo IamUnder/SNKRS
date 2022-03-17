@@ -159,9 +159,16 @@
 								<div class="d-flex align-items-start">
 									<img
 										class="me-2 avatar-sm rounded-circle"
+										:src="user.img"
+										alt="Foto del usuario" 
+                                        v-if="user.img"
+										/>
+                                    <img
+										class="me-2 avatar-sm rounded-circle"
 										src="https://bootdey.com/img/Content/avatar/avatar4.png"
 										alt="Foto del usuario" 
-										/> <!-- WIP -->
+                                        v-else
+										/>
 									<div class="w-100">
 										<h5 class="">
                                             {{post.nameUser}}

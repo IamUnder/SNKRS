@@ -9,15 +9,20 @@
                 <!-- POST PRINCIPAL -->
                 <div class="row mb-3">
                     <div class="border p-2 mb-3 ml-3" v-if="post">
-                        
                         <!-- Parent -->
                         <div class="border p-2 mb-3 ml-3" v-if="parent.length != 0">
                             <div class="d-flex align-items-start">
-                                <!-- Imagen de perfil WIP -->
+                                <img
+                                    class="me-2 avatar-sm rounded-circle"
+                                    :src="parent.imgUser"
+                                    alt="imagen de perfil"
+                                    v-if="parent.imgUser"
+                                    />
                                 <img
                                     class="me-2 avatar-sm rounded-circle"
                                     src="https://bootdey.com/img/Content/avatar/avatar4.png"
                                     alt="imagen de perfil"
+                                    v-else
                                     />
                                 <div class="w-100">
                                     <h5 class="">
@@ -52,12 +57,18 @@
                         <!-- End parent -->
 
                         <div class="d-flex align-items-start">
-                            <!-- Imagen de perfil WIP -->
+                            <img
+                                class="me-2 avatar-sm rounded-circle"
+                                :src="post.imgUser"
+                                alt="imagen de perfil"
+                                v-if="post.imgUser"
+                                />
                             <img
                                 class="me-2 avatar-sm rounded-circle"
                                 src="https://bootdey.com/img/Content/avatar/avatar4.png"
                                 alt="imagen de perfil"
-                                />
+                                v-else
+                            />
                             <div class="w-100">
                                 <h5 class="">
                                     <small @click="goTo(post.user)">{{ post.nameUser }} </small>
@@ -97,8 +108,15 @@
                             <!-- Imagen de perfil WIP -->
                             <img
                                 class="me-2 avatar-sm rounded-circle"
+                                :src="re.imgUser"
+                                alt="imagen de perfil"
+                                v-if="re.imgUser"
+                                />
+                            <img
+                                class="me-2 avatar-sm rounded-circle"
                                 src="https://bootdey.com/img/Content/avatar/avatar4.png"
                                 alt="imagen de perfil"
+                                v-else
                                 />
                             <div class="w-100">
                                 <h5 class="">
