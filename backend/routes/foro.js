@@ -150,6 +150,18 @@ router.get('/get', authRoutes, async (req, res) => {
     })
 })
 
+// Ruta de obtencion de todos los post
+router.get('/getall', authRoutes, async (req, res) => {
+
+
+    const posts = await Post.find().sort({_id: -1}).limit(50)
+
+    return res.json({
+        error: null,
+        posts: posts
+    })
+})
+
 // Ruta de obtenicion de los post de un solo usuario
 router.get('/get/:id', async (req, res) => {
 
