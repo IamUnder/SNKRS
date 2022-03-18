@@ -24,7 +24,11 @@ function setUser (user) {
 // Funcion get user en cookies
 function getUser () {
     var user = cookies.get("userLogged")
-    return JSON.parse(user)
+    if (user) {
+        return JSON.parse(user)
+    }
+
+    return ''
 }
 
 // Funcion para hacer logout
@@ -41,4 +45,16 @@ function getOneUser (userData) {
     return axios.post(ENDPOINT_PATH+'/user',user)
 }
 
-export default { login, register, setUser, getUser, logOut, getOneUser };
+// Funcion para el middleware
+function validate (token) {
+    const headers = {
+        'Content-Type': 'application/json',
+        'auth-token': token
+    }
+
+    return axios.post(ENDPOINT_PATH+'validate',{}, {
+        headers: headers
+    })
+}
+
+export default { login, register, setUser, getUser, logOut, getOneUser, validate };

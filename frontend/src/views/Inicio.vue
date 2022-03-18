@@ -175,7 +175,11 @@ export default {
                 console.log(formData);
 
                 foro.createPost(formData, this.user.token).then( () => {
-                    this.getAllPost()
+                    if (this.estado) {
+                        this.getPost()
+                    } else {
+                        this.getAllPost()
+                    }
                     this.post = ''
                 })
             }
@@ -248,11 +252,18 @@ export default {
             })
         },
         fav (id) {
-            foro.fav(id, this.user.token).then(response => {
-                console.log(response.data);
-                this.getAllPost()
+            foro.fav(id, this.user.token).then(() => {
+                if (this.estado) {
+                    this.getPost()
+                } else {
+                    this.getAllPost()
+                }
             }).catch(() =>{
-                this.getAllPost
+                if (this.estado) {
+                    this.getPost()
+                } else {
+                    this.getAllPost()
+                }
             })
         }
     },
