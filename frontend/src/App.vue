@@ -1,5 +1,9 @@
 <template>
+
   <v-app>
+    <head>
+      <link rel="icon" type="image/png" sizes="96x96" href="./assets/favicon.ico">
+    </head>
     <!-- <v-app-bar
       app
       color="primary"
@@ -27,6 +31,7 @@ export default {
   data: () => ({
     //
   }),
+  
 };
 </script>
 
