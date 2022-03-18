@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken')
 
 // Middleware para validar rutas
 const verifyToken = (req, res, next) => {
+
+    console.log('test');
     const token = req.header('auth-token')
     if (!token) return res.status(401).json({ error: 'Acceso denegado.' })
 

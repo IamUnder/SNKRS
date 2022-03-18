@@ -7,6 +7,16 @@
         <div class="main">
             <div class="container">
                 <div class="row mb-3">
+                    <div class="mb-4">
+                        <label class="custom-control teleport-switch">
+                            <span class="teleport-switch-control-description">Todos los post</span>
+                            <input type="checkbox" class="teleport-switch-control-input" checked="true" @click="switchVista()">
+                            <span class="teleport-switch-control-indicator"></span>
+                            <span class="teleport-switch-control-description">Gente que sigues</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <!-- comment box -->
                     <form action="javascript:void(0)" class="comment-area-box mb-3">
                         <span class="input-icon">
@@ -123,13 +133,23 @@ export default {
         user: {},
         post: "",
         posts: [],
-        fileArray: null
+        fileArray: null,
+        estado: true
     }),
     mounted() {
         this.user = auth.getUser()
-        this.getAllPost()
+        this.getPost()
     },
     methods: {
+        switchVista () {
+            this.estado = !this.estado
+
+            if (this.estado) {
+                this.getPost()
+            } else {
+                this.getAllPost()
+            }
+        },
         onChange (event) {
             console.log('test');
             this.fileArray = event.target.files
@@ -155,13 +175,22 @@ export default {
                 console.log(formData);
 
                 foro.createPost(formData, this.user.token).then( () => {
-                    this.getAllPost()
+                    if (this.estado) {
+                        this.getPost()
+                    } else {
+                        this.getAllPost()
+                    }
                     this.post = ''
                 })
             }
         },
-        getAllPost () {
+        getPost () {
             foro.getAllPost(this.user.token).then( response => {
+                this.posts = response.data.posts
+            })
+        },
+        getAllPost () {
+            foro.getAll(this.user.token).then( response => {
                 this.posts = response.data.posts
             })
         },
@@ -223,11 +252,18 @@ export default {
             })
         },
         fav (id) {
-            foro.fav(id, this.user.token).then(response => {
-                console.log(response.data);
-                this.getAllPost()
+            foro.fav(id, this.user.token).then(() => {
+                if (this.estado) {
+                    this.getPost()
+                } else {
+                    this.getAllPost()
+                }
             }).catch(() =>{
-                this.getAllPost
+                if (this.estado) {
+                    this.getPost()
+                } else {
+                    this.getAllPost()
+                }
             })
         }
     },
@@ -291,4 +327,60 @@ export default {
         opacity: 0;
         filter: alpha(opacity=0);
     }
+
+    .custom-control.teleport-switch {
+    --color: #F77F00;
+    padding-left: 0; }
+    .custom-control.teleport-switch .teleport-switch-control-input {
+    display: none; }
+    .custom-control.teleport-switch .teleport-switch-control-input:checked ~ .teleport-switch-control-indicator {
+        border-color: var(--color); }
+    .custom-control.teleport-switch .teleport-switch-control-input:checked ~ .teleport-switch-control-indicator::after {
+        left: -14px; }
+    .custom-control.teleport-switch .teleport-switch-control-input:checked ~ .teleport-switch-control-indicator::before {
+        right: 2px;
+        background-color: var(--color); }
+    .custom-control.teleport-switch .teleport-switch-control-input:disabled ~ .teleport-switch-control-indicator {
+        opacity: .4; }
+    .custom-control.teleport-switch .teleport-switch-control-indicator {
+    display: inline-block;
+    position: relative;
+    margin: 0 10px;
+    top: 4px;
+    width: 32px;
+    height: 20px;
+    background: #fff;
+    border-radius: 16px;
+    -webkit-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
+    border: 2px solid #ccc;
+    overflow: hidden; }
+    .custom-control.teleport-switch .teleport-switch-control-indicator::after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        -webkit-transition: .3s;
+        -o-transition: .3s;
+        transition: .3s;
+        top: 2px;
+        left: 2px;
+        background: #ccc; }
+    .custom-control.teleport-switch .teleport-switch-control-indicator::before {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        -webkit-transition: .3s;
+        -o-transition: .3s;
+        transition: .3s;
+        top: 2px;
+        right: -14px;
+        background: #ccc; }
+
 </style>

@@ -8,6 +8,7 @@ import PerfilUser from '@/views/PerfilInfo.vue'
 import Oferta from '@/views/Oferta.vue'
 import Tracking from '@/views/Tracking.vue'
 import Post from '@/views/Post.vue'
+import auth from '@/logic/auth.js'
 
 Vue.use(VueRouter)
 
@@ -31,8 +32,8 @@ const routes = [
     meta: { title: 'SNRKS: Inicio' }
   },
   {
-    path: '/Register',
-    name: 'SNRKS: Register',
+    path: '/Registro',
+    name: 'SNRKS: Registro',
     component: Register,
     meta: { title: 'SNRKS: Registro'}
   },
@@ -65,14 +66,6 @@ const routes = [
     name: 'SNRKS: Tracking',
     component: Tracking,
     meta: { title: 'SNRKS: Tracking'}
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   }
 ]
 
@@ -81,5 +74,24 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title || 'Your Website Title';
+  next();
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.path == '/Login' || to.path == '/' || to.path == '/Registro' ) {
+      next();
+  } else {
+      console.log(auth.getUser().token);
+      auth.validate(auth.getUser().token).then(() =>{
+        next()
+      }).catch(() => {
+        next('Login');
+      })
+
+  }
+});
 
 export default router

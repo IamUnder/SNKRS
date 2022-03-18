@@ -54,6 +54,17 @@ function getAllPost (token) {
     })
 }
 
+function getAll (token) {
+    const headers = {
+        'Content-Type': 'application/json',
+        'auth-token': token
+    }
+
+    return axios.get(ENDPOINT_PATH+'f/getAll',{
+        headers: headers
+    })
+}
+
 // Funcion para recuperar los post de un usuario
 function getPost (id) {
 
@@ -99,5 +110,6 @@ export default {
     unfollow,
     getOnePost,
     reply,
-    fav
+    fav,
+    getAll
 }

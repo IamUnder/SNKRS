@@ -47,7 +47,7 @@
               </div>
 
               <div class="col-8 offset-2 mt-5 text-b">
-                <h5>Aun no tienes cuenta? <a href="/Register">Registrate aqui!</a></h5>
+                <h5>Aun no tienes cuenta? <a href="/Registro">Registrate aqui!</a></h5>
                 <h5>¿Olvidaste tu contraseña?</h5>
               </div> 
             </form>

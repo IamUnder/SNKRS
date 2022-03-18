@@ -4,6 +4,7 @@ const User = require('../models/users')
 const Joi = require('@hapi/joi')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const authRoutes = require('./validate-token')
 
 // Validacion 
 const schemaRegister = Joi.object({
@@ -188,6 +189,16 @@ router.post('/user', async (req, res) => {
         }
     })
 
+})
+
+// Ruta para comprobar si se puede acceder a rutas
+router.post('/validate', authRoutes, async (req, res) => {
+    
+    console.log('llego aqui');
+
+    return res.json({
+        error: null
+    })
 })
 
 module.exports = router;

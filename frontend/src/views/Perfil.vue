@@ -346,11 +346,10 @@
                 this.getPost()
             },
             fav (id) {
-                foro.fav(id, this.user.token).then(response => {
-                    console.log(response.data);
-                    this.getAllPost()
+                foro.fav(id, this.user.token).then(() => {
+                    this.getPost()
                 }).catch(() =>{
-                    this.getAllPost
+                    this.getPost()
                 })
             }
         },
